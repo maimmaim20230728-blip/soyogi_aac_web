@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="はなすことが むずかしい ひとのための 無料コミュニケーションツール。広告なし・登録不要・オフラインOK・14言語。">
+<title>そよぎ式AACアプリ</title>
+<meta name="theme-color" content="#2e9e6b">
+<meta property="og:title" content="そよぎ式AACアプリ">
+<meta property="og:description" content="タップで話せる無料コミュニケーションツール。広告なし・登録不要・オフラインOK・14言語。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://soyogi-aac-web.vercel.app/">
+<meta property="og:image" content="https://soyogi-aac-web.vercel.app/icons/farcaster-embed.png">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Farcaster Mini App 埋め込み（タイムラインで画像＋ボタン→タップで起動） -->
+<meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://soyogi-aac-web.vercel.app/icons/farcaster-embed.png","button":{"title":"💬 はなす / Talk","action":{"type":"launch_miniapp","name":"そよぎ式AACアプリ","url":"https://soyogi-aac-web.vercel.app/","splashImageUrl":"https://soyogi-aac-web.vercel.app/icons/icon-512.png","splashBackgroundColor":"#2e9e6b"}}}' />
+<!-- 旧クライアント/バリデータ互換の fc:frame 併記（中身同一） -->
+<meta name="fc:frame" content='{"version":"1","imageUrl":"https://soyogi-aac-web.vercel.app/icons/farcaster-embed.png","button":{"title":"💬 はなす / Talk","action":{"type":"launch_frame","name":"そよぎ式AACアプリ","url":"https://soyogi-aac-web.vercel.app/","splashImageUrl":"https://soyogi-aac-web.vercel.app/icons/icon-512.png","splashBackgroundColor":"#2e9e6b"}}}' />
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+
+  <!-- はなす -->
+  <section id="scr-talk" class="screen">
+    <header id="talk-head">
+      <div id="voice-warn" class="warn hidden"></div>
+      <div id="bar-wrap">
+        <div id="bar"></div>
+        <div id="bar-btns">
+          <button id="btn-say" class="barbtn brand" aria-label="はなす">▶</button>
+          <button id="btn-star" class="barbtn star" aria-label="ぶんをほぞん">⭐</button>
+          <div id="bar-del">
+            <button id="btn-back" class="barbtn" aria-label="ひとつけす">⌫</button>
+            <button id="btn-clear" class="barbtn" aria-label="ぜんぶけす">🗑️</button>
+          </div>
+        </div>
+      </div>
+      <div id="cats"></div>
+      <div id="mine-tools" class="hidden">
+        <button id="btn-my-add" class="pill brand"></button>
+        <button id="btn-my-edit" class="pill"></button>
+      </div>
+    </header>
+    <div id="grid"></div>
+  </section>
+
+  <!-- きんきゅう -->
+  <section id="scr-er" class="screen hidden">
+    <h2 id="er-title"></h2>
+    <p id="er-hint" class="hint"></p>
+    <div id="er-grid"></div>
+  </section>
+
+  <!-- もじ（文字盤） -->
+  <section id="scr-kb" class="screen hidden">
+    <div id="kb-out"></div>
+    <textarea id="kb-ta" class="hidden" rows="3"></textarea>
+    <div class="btnrow kb-actions">
+      <button id="btn-kb-say" class="action brand"></button>
+      <button id="btn-kb-big" class="action"></button>
+    </div>
+    <div id="kb-keys"></div>
+  </section>
+
+  <!-- みせる -->
+  <section id="scr-show" class="screen hidden">
+    <h2 id="show-title"></h2>
+    <textarea id="show-text" rows="4"></textarea>
+    <div class="btncol">
+      <button id="btn-show-big" class="action brand"></button>
+      <button id="btn-show-say" class="action"></button>
+      <button id="btn-show-from-bar" class="action ghost"></button>
+    </div>
+    <p id="show-hint" class="hint"></p>
+  </section>
+
+  <!-- せってい -->
+  <section id="scr-set" class="screen hidden">
+    <h2 id="set-title"></h2>
+
+    <div class="setrow">
+      <span class="setlabel" id="lb-text"></span>
+      <div class="seg" id="seg-text">
+        <button data-v="s" id="tx-s"></button>
+        <button data-v="m" id="tx-m"></button>
+        <button data-v="l" id="tx-l"></button>
+      </div>
+    </div>
+
+    <div class="setrow">
+      <span class="setlabel" id="lb-grid"></span>
+      <div class="seg" id="seg-grid">
+        <button data-v="l" id="gd-l"></button>
+        <button data-v="m" id="gd-m"></button>
+        <button data-v="s" id="gd-s"></button>
+      </div>
+    </div>
+
+    <div class="setrow">
+      <span class="setlabel" id="lb-instant"></span>
+      <div class="seg" id="seg-instant">
+        <button data-v="1" id="in-on"></button>
+        <button data-v="0" id="in-off"></button>
+      </div>
+    </div>
+
+    <div class="setrow">
+      <span class="setlabel" id="lb-rate"></span>
+      <div class="seg" id="seg-rate">
+        <button data-v="slow" id="rt-s"></button>
+        <button data-v="normal" id="rt-m"></button>
+        <button data-v="fast" id="rt-f"></button>
+      </div>
+    </div>
+
+    <div class="setrow">
+      <span class="setlabel" id="lb-scan"></span>
+      <div class="seg" id="seg-scan">
+        <button data-v="0" id="sc-off"></button>
+        <button data-v="1" id="sc-on"></button>
+      </div>
+      <div class="seg" id="seg-scanspd">
+        <button data-v="slow" id="sp-s"></button>
+        <button data-v="normal" id="sp-m"></button>
+        <button data-v="fast" id="sp-f"></button>
+      </div>
+      <p class="hint" id="scan-hint"></p>
+    </div>
+
+    <div class="setrow">
+      <span class="setlabel" id="lb-voice"></span>
+      <div class="voicerow">
+        <select id="set-voice"></select>
+        <button id="btn-voicetest" class="pill"></button>
+      </div>
+    </div>
+
+    <div class="setrow">
+      <span class="setlabel" id="lb-my"></span>
+      <div class="voicerow">
+        <button id="btn-my-add2" class="pill brand"></button>
+      </div>
+      <ul id="my-list"></ul>
+    </div>
+
+    <div class="setrow">
+      <span class="setlabel" id="lb-backup"></span>
+      <div class="voicerow">
+        <button id="btn-bk-export" class="pill"></button>
+        <button id="btn-bk-import" class="pill"></button>
+      </div>
+      <p class="hint" id="bk-hint"></p>
+      <p class="hint" id="bk-msg"></p>
+      <input type="file" id="bk-file" accept="application/json,.json" class="hidden">
+    </div>
+
+    <div class="setrow about">
+      <span class="setlabel" id="lb-about"></span>
+      <p id="about-text"></p>
+      <p id="about-credit"></p>
+      <p class="ver">v0.1.0</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- タブ -->
+<nav id="tabs">
+  <button data-scr="talk" class="active"><span class="te">💬</span><span class="tl" id="tb-talk"></span></button>
+  <button data-scr="er"><span class="te">🚨</span><span class="tl" id="tb-er"></span></button>
+  <button data-scr="kb"><span class="te">🔤</span><span class="tl" id="tb-kb"></span></button>
+  <button data-scr="show"><span class="te">📄</span><span class="tl" id="tb-show"></span></button>
+  <button id="tab-lang" type="button">
+    <span class="te">🌐</span><span class="tl" id="tb-lang"></span>
+    <select id="tab-lang-sel" aria-label="Language / ことば"></select>
+  </button>
+  <button data-scr="set"><span class="te">⚙️</span><span class="tl" id="tb-set"></span></button>
+</nav>
+
+<!-- でかもじ表示 -->
+<div id="bigview" class="hidden"><div id="bigtext"></div></div>
+
+<!-- じぶんカード追加ダイアログ -->
+<div id="mydlg" class="hidden">
+  <div id="mydlg-box">
+    <label><span id="dlg-lb-label"></span><input id="my-l" maxlength="30"></label>
+    <label><span id="dlg-lb-photo"></span></label>
+    <div class="photorow">
+      <button id="btn-my-photo" class="pill"></button>
+      <img id="my-photo-prev" class="hidden" alt="">
+      <button id="btn-my-photo-clear" class="pill hidden"></button>
+    </div>
+    <input type="file" id="my-photo-file" accept="image/*" class="hidden">
+    <label><span id="dlg-lb-emoji"></span><input id="my-e" maxlength="8" placeholder="⭐"></label>
+    <p class="hint" id="dlg-hint"></p>
+    <div class="btnrow">
+      <button id="btn-my-save" class="action brand"></button>
+      <button id="btn-my-cancel" class="action ghost"></button>
+    </div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="data/cards.js"></script>
+<script src="app.js"></script>
+<!-- Farcaster Mini App SDK：読込完了を通知しスプラッシュを閉じる（Farcaster外/オフラインでは無害にスキップ） -->
+<script type="module">
+  try {
+    const { sdk } = await import("https://esm.sh/@farcaster/miniapp-sdk");
+    await sdk.actions.ready();
+  } catch (e) { /* Farcaster外では何もしない */ }
+</script>
+</body>
+</html>

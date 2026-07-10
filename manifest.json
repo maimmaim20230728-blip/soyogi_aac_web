@@ -1,0 +1,15 @@
+{
+  "name": "そよぎ式AACアプリ",
+  "short_name": "そよぎAAC",
+  "description": "はなすことが むずかしい ひとのための 無料コミュニケーションツール。広告なし・登録不要・オフラインOK。",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4faf6",
+  "theme_color": "#2e9e6b",
+  "lang": "ja",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

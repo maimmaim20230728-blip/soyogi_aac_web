@@ -1,0 +1,16 @@
+{
+  "miniapp": {
+    "version": "1",
+    "name": "そよぎ式AACアプリ",
+    "iconUrl": "https://soyogi-aac-web.vercel.app/icons/icon-512.png",
+    "homeUrl": "https://soyogi-aac-web.vercel.app/",
+    "imageUrl": "https://soyogi-aac-web.vercel.app/icons/farcaster-embed.png",
+    "buttonTitle": "💬 はなす / Talk",
+    "splashImageUrl": "https://soyogi-aac-web.vercel.app/icons/icon-512.png",
+    "splashBackgroundColor": "#2e9e6b",
+    "subtitle": "話せない人のための無料AAC",
+    "description": "タップで話せる無料コミュニケーションツール（AAC）。文カード201枚・緊急SOS・50音文字盤・スイッチスキャン対応。広告なし・登録不要・オフラインOK・14言語。",
+    "primaryCategory": "utility",
+    "tags": ["aac", "accessibility", "communication", "offline", "soyogi"]
+  }
+}
