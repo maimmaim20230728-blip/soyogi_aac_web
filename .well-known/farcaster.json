@@ -1,4 +1,9 @@
 {
+  "accountAssociation": {
+    "header": "eyJmaWQiOjMzMzkzMTUsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg2RGYyOTIyRjc4OUVmMTFmNjk3NDREMEZkYWZCNDhmN2VhNjRmYTExIn0",
+    "payload": "eyJkb21haW4iOiJzb3lvZ2ktYWFjLXdlYi52ZXJjZWwuYXBwIn0",
+    "signature": "x1uUsVX5XLqBtOh3+3jfp/bOQiE76JF2GDlan4v/ET5mcXmCXWnURU55I386ZNWFrDbASAWNAUTBikG7dmsuexs="
+  },
   "miniapp": {
     "version": "1",
     "name": "そよぎ式AACアプリ",
