@@ -54,7 +54,7 @@ LBL.hi = {
   bus: 'बस', work: 'काम', police: 'पुलिस', out: 'बाहर',
   now: 'अभी', today: 'आज', tomorrow: 'कल (आने वाला)', yesterday: 'कल (बीता)',
   morning: 'सुबह', daytime: 'दिन में', night: 'रात', later: 'बाद में',
-  notyet: 'अभी नहीं', already: 'पहले ही',
+  notyet: 'अभी नहीं', already: 'पहले ही', before: 'पहले', after: 'बाद में',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'मिनट', oclock: 'बजे', hourdur: 'घंटे',
   erhelp: 'कृपया मेरी मदद कीजिए!', erambulance: 'एम्बुलेंस बुलाइए!',

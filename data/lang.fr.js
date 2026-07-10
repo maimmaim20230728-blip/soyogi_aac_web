@@ -54,7 +54,7 @@ LBL.fr = {
   bus: 'le bus', work: 'le travail', police: 'la police', out: 'dehors',
   now: 'maintenant', today: "aujourd'hui", tomorrow: 'demain', yesterday: 'hier',
   morning: 'le matin', daytime: 'la journée', night: 'le soir', later: 'plus tard',
-  notyet: 'pas encore', already: 'déjà',
+  notyet: 'pas encore', already: 'déjà', before: 'avant', after: 'après',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'minutes', oclock: 'heures', hourdur: 'heures (durée)',
   erhelp: 'Aidez-moi, s’il vous plaît !', erambulance: 'Appelez une ambulance !',

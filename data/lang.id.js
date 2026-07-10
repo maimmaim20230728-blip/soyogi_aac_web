@@ -54,7 +54,7 @@ LBL.id = {
   bus: 'bus', work: 'tempat kerja', police: 'kantor polisi', out: 'di luar',
   now: 'sekarang', today: 'hari ini', tomorrow: 'besok', yesterday: 'kemarin',
   morning: 'pagi', daytime: 'siang', night: 'malam', later: 'nanti',
-  notyet: 'belum', already: 'sudah',
+  notyet: 'belum', already: 'sudah', before: 'sebelum', after: 'sesudah',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'menit', oclock: 'pukul', hourdur: 'jam',
   erhelp: 'Tolong bantu saya!', erambulance: 'Panggil ambulans!',

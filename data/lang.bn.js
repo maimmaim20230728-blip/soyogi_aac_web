@@ -54,7 +54,7 @@ LBL.bn = {
   bus: 'বাস', work: 'কাজ', police: 'পুলিশ', out: 'বাইরে',
   now: 'এখন', today: 'আজ', tomorrow: 'আগামীকাল', yesterday: 'গতকাল',
   morning: 'সকালে', daytime: 'দিনে', night: 'রাতে', later: 'পরে',
-  notyet: 'এখনও না', already: 'ইতিমধ্যে',
+  notyet: 'এখনও না', already: 'ইতিমধ্যে', before: 'আগে', after: 'পরে',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'মিনিট', oclock: 'টা বাজে', hourdur: 'ঘণ্টা',
   erhelp: 'দয়া করে আমাকে সাহায্য করুন!', erambulance: 'অ্যাম্বুলেন্স ডাকুন!',

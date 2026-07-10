@@ -54,7 +54,7 @@ LBL.pt = {
   bus: 'ônibus', work: 'trabalho', police: 'polícia', out: 'lá fora',
   now: 'agora', today: 'hoje', tomorrow: 'amanhã', yesterday: 'ontem',
   morning: 'de manhã', daytime: 'de dia', night: 'à noite', later: 'mais tarde',
-  notyet: 'ainda não', already: 'já',
+  notyet: 'ainda não', already: 'já', before: 'antes', after: 'depois',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'minutos', oclock: 'horas', hourdur: 'horas (duração)',
   erhelp: 'Me ajudem, por favor!', erambulance: 'Chamem uma ambulância!',

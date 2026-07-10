@@ -54,7 +54,7 @@ LBL.ru = {
   bus: 'автобус', work: 'работа', police: 'полиция', out: 'улица',
   now: 'сейчас', today: 'сегодня', tomorrow: 'завтра', yesterday: 'вчера',
   morning: 'утром', daytime: 'днём', night: 'вечером', later: 'позже',
-  notyet: 'ещё нет', already: 'уже',
+  notyet: 'ещё нет', already: 'уже', before: 'до', after: 'после',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'минут', oclock: 'часов', hourdur: 'часа',
   erhelp: 'Помогите мне, пожалуйста!', erambulance: 'Вызовите скорую!',

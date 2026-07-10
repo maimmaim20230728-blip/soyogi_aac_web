@@ -54,7 +54,7 @@ LBL.it = {
   bus: 'autobus', work: 'lavoro', police: 'polizia', out: 'fuori',
   now: 'adesso', today: 'oggi', tomorrow: 'domani', yesterday: 'ieri',
   morning: 'di mattina', daytime: 'di giorno', night: 'di sera', later: 'più tardi',
-  notyet: 'non ancora', already: 'già',
+  notyet: 'non ancora', already: 'già', before: 'prima', after: 'dopo',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'minuti', oclock: 'in punto', hourdur: 'ore',
   erhelp: 'Aiutatemi, per favore!', erambulance: "Chiamate un'ambulanza!",

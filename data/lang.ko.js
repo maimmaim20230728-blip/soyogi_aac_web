@@ -54,7 +54,7 @@ LBL.ko = {
   bus: '버스', work: '직장', police: '파출소', out: '밖',
   now: '지금', today: '오늘', tomorrow: '내일', yesterday: '어제',
   morning: '아침', daytime: '낮', night: '밤', later: '나중에',
-  notyet: '아직', already: '벌써',
+  notyet: '아직', already: '벌써', before: '전', after: '후',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: '분', oclock: '시', hourdur: '시간',
   erhelp: '도와주세요!', erambulance: '구급차를 불러 주세요!',

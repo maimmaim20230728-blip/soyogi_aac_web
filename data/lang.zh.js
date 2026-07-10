@@ -53,7 +53,7 @@ LBL.zh = {
   bus: '公交车', work: '工作', police: '派出所', out: '外面',
   now: '现在', today: '今天', tomorrow: '明天', yesterday: '昨天',
   morning: '早上', daytime: '白天', night: '晚上', later: '等一会儿',
-  notyet: '还没有', already: '已经',
+  notyet: '还没有', already: '已经', before: '之前', after: '之后',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: '分钟', oclock: '点', hourdur: '小时',
   erhelp: '请帮帮我！', erambulance: '请叫救护车！',

@@ -54,7 +54,7 @@ LBL.de = {
   bus: 'Bus', work: 'Arbeit', police: 'Polizei', out: 'draußen',
   now: 'jetzt', today: 'heute', tomorrow: 'morgen', yesterday: 'gestern',
   morning: 'am Morgen', daytime: 'am Tag', night: 'am Abend', later: 'später',
-  notyet: 'noch nicht', already: 'schon',
+  notyet: 'noch nicht', already: 'schon', before: 'vorher', after: 'nachher',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'Minuten', oclock: 'Uhr', hourdur: 'Stunden',
   erhelp: 'Bitte helfen Sie mir!', erambulance: 'Rufen Sie einen Krankenwagen!',

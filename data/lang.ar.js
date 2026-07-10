@@ -54,7 +54,7 @@ LBL.ar = {
   bus: 'الحافلة', work: 'العمل', police: 'الشرطة', out: 'الخارج',
   now: 'الآن', today: 'اليوم', tomorrow: 'غداً', yesterday: 'أمس',
   morning: 'صباحاً', daytime: 'نهاراً', night: 'ليلاً', later: 'لاحقاً',
-  notyet: 'ليس بعد', already: 'بالفعل',
+  notyet: 'ليس بعد', already: 'بالفعل', before: 'قبل', after: 'بعد',
   n1: '1', n3: '3', n5: '5', n10: '10', n15: '15', n30: '30', n45: '45', n60: '60',
   min: 'دقائق', oclock: 'الساعة', hourdur: 'ساعات',
   erhelp: 'ساعدوني من فضلكم!', erambulance: 'اتصلوا بالإسعاف!',
