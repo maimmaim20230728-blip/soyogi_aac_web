@@ -876,7 +876,6 @@ function init() {
   boot();
 }
 function boot() {
-  fillLangSelect();
   applySettings();
   applyI18n();
   renderAll();
