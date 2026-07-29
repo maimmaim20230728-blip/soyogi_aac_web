@@ -72,6 +72,18 @@ function applyDir() {
 
 // ---------- 読み上げ ----------
 const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
+// Play版(Capacitor)のWebViewはWeb Speech API非対応の端末が多い。
+// その場合は端末内蔵のTTSエンジン(ネイティブ)へ橋渡しして読み上げる。
+const nativeTTS = (function () {
+  try {
+    const c = window.Capacitor;
+    if (c && typeof c.isNativePlatform === 'function' && c.isNativePlatform() &&
+        typeof c.registerPlugin === 'function') {
+      return c.registerPlugin('TextToSpeech');
+    }
+  } catch (e) {}
+  return null;
+})();
 let voices = [];
 
 function refreshVoices() {
@@ -94,13 +106,28 @@ function pickVoice() {
   return vs.find(v => v.localService) || vs[0];
 }
 function speak(text) {
-  if (!synth || !text) return false;
+  if (!text) return false;
+  const rate = { slow: 0.75, normal: 1, fast: 1.3 }[S.rate] || 1;
+  if (nativeTTS) {
+    // 読み上げ中のものを止めてから話す(Web版のcancel()と同じ挙動)
+    nativeTTS.stop().catch(function () {}).then(function () {
+      nativeTTS.speak({
+        text: text,
+        lang: speakLang(),
+        rate: rate,
+        pitch: 1.0,
+        volume: 1.0
+      }).catch(function () {});
+    });
+    return true;
+  }
+  if (!synth) return false;
   synth.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = speakLang();
   const v = pickVoice();
   if (v) u.voice = v;
-  u.rate = { slow: 0.75, normal: 1, fast: 1.3 }[S.rate] || 1;
+  u.rate = rate;
   synth.speak(u);
   return true;
 }
@@ -907,7 +934,18 @@ function boot() {
     if (curCat === 'saved') renderGrid();
   };
 
-  if (!synth) {
+  if (nativeTTS) {
+    // 端末内蔵TTSに接続できるか一度だけ確認(つながらない時だけ警告を出す)
+    nativeTTS.getSupportedLanguages().then(function () {
+      $('#voice-warn').classList.add('hidden');
+    }).catch(function () {
+      $('#voice-warn').classList.remove('hidden');
+    });
+    if (synth) {
+      refreshVoices();
+      synth.onvoiceschanged = refreshVoices;
+    }
+  } else if (!synth) {
     $('#voice-warn').classList.remove('hidden');
   } else {
     refreshVoices();
