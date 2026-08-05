@@ -10,6 +10,9 @@
   --yes: #2e9e6b;
   --no: #d64545;
   --nav-h: 66px;
+  /* 下タブ(#tabs)の高さ。app.js が実測値で上書きする。
+     ここの値はJSが動く前のフォールバック(端末の下部インセットぶんを含む) */
+  --tabbar-h: calc(var(--nav-h) + env(safe-area-inset-bottom));
 }
 
 html { font-size: 17px; }
@@ -38,16 +41,26 @@ body {
 
 .screen {
   min-height: 100dvh;
-  padding: 10px 10px calc(var(--nav-h) + 16px);
+  /* targetSdk36(Android15+)はエッジtoエッジ強制で、画面がステータスバー(時計・電池)と
+     ナビゲーションバーの下まで描かれる。上下ともその分だけ内側に空ける。
+     下は「CSSだけで安全な下限」と「下タブの実測+10px」の大きい方を採り、
+     JSの計測(--tabbar-h)が遅れても・小さく出ても下限を割らない */
+  padding: calc(10px + env(safe-area-inset-top)) max(10px, env(safe-area-inset-right))
+           max(calc(var(--nav-h) + 16px + env(safe-area-inset-bottom)), calc(var(--tabbar-h) + 10px))
+           max(10px, env(safe-area-inset-left));
   max-width: 900px;
   margin: 0 auto;
 }
+/* はなす画面だけは固定ヘッダー(#talk-head)自身が上インセットを持つので二重に空けない */
+#scr-talk { padding-top: 10px; }
 h2 { margin: 6px 4px 4px; font-size: 1.2rem; }
 
 /* ---------- ヘッダー（文バー+カテゴリを固定） ---------- */
 #talk-head {
   position: sticky; top: 0; z-index: 5;
   background: var(--bg);
+  /* スクロールで画面上端に貼り付いた時、時計・電池アイコンと重ならないよう内側に下げる */
+  padding-top: env(safe-area-inset-top);
   padding-bottom: 4px;
   box-shadow: 0 5px 10px -7px rgba(30, 70, 50, 0.35);
 }
@@ -256,10 +269,14 @@ h2 { margin: 6px 4px 4px; font-size: 1.2rem; }
   background: #111;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
+  /* でか文字が時計・ナビゲーションバーに隠れないよう内側を狭める。
+     app.js の fitBigText はこの内側の実寸に収まるまで文字を縮める */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 #bigtext {
   color: #fff;
-  width: 96vw;
+  width: 96%;
   text-align: center;
   font-weight: bold;
   line-height: 1.25;
@@ -335,11 +352,15 @@ h2 { margin: 6px 4px 4px; font-size: 1.2rem; }
 /* ---------- タブ ---------- */
 #tabs {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
-  height: var(--nav-h);
+  /* 高さは固定せず下限にする。box-sizing:border-box なので height 固定のままだと
+     ナビゲーションバーぶんの余白がタブのボタンを押しつぶしてしまう */
+  min-height: calc(var(--nav-h) + env(safe-area-inset-bottom));
   display: flex;
   background: #fff;
   border-top: 2px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 #tabs button {
   flex: 1;
@@ -359,7 +380,9 @@ h2 { margin: 6px 4px 4px; font-size: 1.2rem; }
   position: fixed; inset: 0; z-index: 40;
   background: rgba(0,0,0,0.45);
   display: flex; align-items: center; justify-content: center;
-  padding: 16px;
+  /* 画面いっぱいの箱なので、こちらも端末のバーぶんを内側に空ける */
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 #mydlg-box {
   background: #fff; border-radius: 18px; padding: 18px;

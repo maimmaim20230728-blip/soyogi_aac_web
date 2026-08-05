@@ -565,13 +565,27 @@ function bindKb() {
 }
 
 // ---------- みせる ----------
+// でか文字を置ける実寸(#bigviewの内側)。エッジtoエッジ端末では時計やナビゲーションバーの
+// ぶんをCSSのpaddingで空けてあるので、その内側に収まるまで縮める。
+function bigFitBox() {
+  const box = $('#bigview');
+  const fb = { w: window.innerWidth, h: window.innerHeight };
+  if (!box || !box.clientWidth || !window.getComputedStyle) return fb;
+  const cs = window.getComputedStyle(box);
+  if (!cs) return fb;
+  const px = (v) => parseFloat(v) || 0;
+  const w = box.clientWidth - px(cs.paddingLeft) - px(cs.paddingRight);
+  const h = box.clientHeight - px(cs.paddingTop) - px(cs.paddingBottom);
+  return { w: w > 0 ? w : fb.w, h: h > 0 ? h : fb.h };
+}
 function fitBigText() {
   const el = $('#bigtext');
-  let size = Math.min(window.innerWidth, window.innerHeight) * 0.5;
+  const box = bigFitBox();
+  let size = Math.min(box.w, box.h) * 0.5;
   el.style.fontSize = size + 'px';
   let guard = 40;
   while (guard-- > 0 && size > 14 &&
-         (el.scrollHeight > window.innerHeight * 0.94 || el.scrollWidth > window.innerWidth * 0.97)) {
+         (el.scrollHeight > box.h * 0.94 || el.scrollWidth > box.w * 0.97)) {
     size *= 0.88;
     el.style.fontSize = size + 'px';
   }
@@ -807,6 +821,33 @@ function applySettings() {
   document.documentElement.dataset.grid = S.grid;
   document.documentElement.lang = S.lang;
   applyDir();
+  applyBarSpace();   // 文字を大きくすると下タブも高くなる → 本文の下余白を測り直す
+}
+
+// ---------- 下タブの高さ（セーフエリア） ----------
+// targetSdk36(Android15+)はエッジtoエッジ強制で、画面がナビゲーションバーの下まで
+// 描かれる。#tabs は自分の余白に safe-area を持つぶん実際の高さが増えるが、
+// 本文側の余白がCSSの固定値だと足りず、最後のカードがタブに隠れてしまう。
+// 高さは文字サイズ・言語(タブ名の折り返し)でも変わるため実測する。
+function applyBarSpace() {
+  const st = document.documentElement && document.documentElement.style;
+  if (!st || !st.setProperty) return;
+  const tb = $('#tabs');
+  if (!tb || !tb.getBoundingClientRect) return;
+  const h = Math.ceil(tb.getBoundingClientRect().height);
+  if (h > 0) st.setProperty('--tabbar-h', h + 'px');
+}
+function watchBarSpace() {
+  if (typeof ResizeObserver === 'undefined') return false;
+  const tb = $('#tabs');
+  if (!tb) return false;
+  try {
+    const ro = new ResizeObserver(applyBarSpace);
+    // 余白(セーフエリア)ぶんの変化も拾えるよう border-box で見る。
+    // 対応していない古いWebViewでは既定の content-box に落として見張る。
+    try { ro.observe(tb, { box: 'border-box' }); } catch (e) { ro.observe(tb); }
+    return true;
+  } catch (e) { return false; }
 }
 
 // ---------- i18n適用 ----------
@@ -862,6 +903,7 @@ function applyI18n() {
   $('#btn-back').setAttribute('aria-label', t.back);
   $('#btn-clear').setAttribute('aria-label', t.clear);
   document.title = t.appName;
+  applyBarSpace();   // 言語でタブ名の折り返しが変わる → 下タブの高さを測り直す
 }
 
 // ---------- タブ ----------
@@ -915,6 +957,15 @@ function boot() {
   bindBackup();
   bindScan();
   if (S.scanOn) scanStart();
+
+  applyBarSpace();
+  watchBarSpace();
+  // ResizeObserver が無い環境(古いWebView)向けの保険
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    window.addEventListener('load', applyBarSpace);
+    window.addEventListener('resize', applyBarSpace);
+    window.addEventListener('orientationchange', applyBarSpace);
+  }
 
   $('#btn-say').onclick = () => { const t = barText(); if (t) speak(t); };
   $('#btn-back').onclick = () => { bar.pop(); renderBar(); };
