@@ -5,7 +5,7 @@
 const LS_SET = 'soyogi_aac.settings';
 const LS_MY = 'soyogi_aac.mycards';
 const LS_PH = 'soyogi_aac.phrases';
-const SOYOGI_URL = 'https://soyogi.hp.peraichi.com/top';
+const SOYOGI_URL = 'https://soudansoyogi.com/';
 const DEF = {
   lang: 'ja', textSize: 'm', grid: 'm', instant: true, rate: 'normal',
   scanOn: false, scanSpeed: 'normal',
