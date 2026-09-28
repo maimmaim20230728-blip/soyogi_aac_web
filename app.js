@@ -74,12 +74,15 @@ function applyDir() {
 const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
 // Play版(Capacitor)のWebViewはWeb Speech API非対応の端末が多い。
 // その場合は端末内蔵のTTSエンジン(ネイティブ)へ橋渡しして読み上げる。
+// 🔴 registerPlugin は @capacitor/core の関数で、バンドラ無しの WebView には無い(native-bridge.js に無い)。
+//    ネイティブが注入する Capacitor.Plugins.TextToSpeech を使う(2026-09-28 判明。registerPlugin だけを見ていた版はPlay版で無音)
 const nativeTTS = (function () {
   try {
     const c = window.Capacitor;
-    if (c && typeof c.isNativePlatform === 'function' && c.isNativePlatform() &&
-        typeof c.registerPlugin === 'function') {
-      return c.registerPlugin('TextToSpeech');
+    if (c && typeof c.isNativePlatform === 'function' && c.isNativePlatform()) {
+      const p = c.Plugins && c.Plugins.TextToSpeech;
+      if (p && typeof p.speak === 'function') return p;
+      if (typeof c.registerPlugin === 'function') return c.registerPlugin('TextToSpeech');
     }
   } catch (e) {}
   return null;
