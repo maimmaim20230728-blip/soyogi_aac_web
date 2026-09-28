@@ -284,6 +284,39 @@ h2 { margin: 6px 4px 4px; font-size: 1.2rem; }
   white-space: pre-wrap;
 }
 
+/* ちいさく みせる: 周りに目立たず相手に見せる。下タブのすぐ上・画面のすみに小さく出す。
+   文字は rem なので「もじの おおきさ」に合わせて大きくなる。長い文は幅で折り返し、
+   高さを超えたら中でスクロール(画面からはみ出さない)。アラビア語(RTL)は左すみ。
+   z-index はタブ(10)より上・ダイアログ(40)とでか文字(50)より下 */
+#smallview {
+  position: fixed; z-index: 30;
+  right: max(10px, env(safe-area-inset-right));
+  bottom: calc(var(--tabbar-h) + 10px);
+  max-width: min(72vw, 360px);
+  max-height: 30vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 8px 12px;
+  background: #fff;
+  color: var(--ink);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(30, 70, 50, 0.18);
+  font-family: inherit;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  text-align: start;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+html[dir="rtl"] #smallview {
+  right: auto;
+  left: max(10px, env(safe-area-inset-left));
+}
+#btn-show-small.on { background: #eaf6ef; border-color: var(--brand); }
+
 /* ---------- せってい ---------- */
 .setrow {
   background: var(--card-bg);

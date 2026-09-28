@@ -172,6 +172,115 @@ const cacheName = (/const CACHE = '([^']+)'/.exec(fs.readFileSync('./sw.js', 'ut
 check('sw.js の CACHE 名がある', !!cacheName);
 console.log('  sw.js CACHE = ' + cacheName);
 
+/* ---- [v1.5] よくつかう9枚・ちいさく みせる・ほぞんした文の即よみ ----
+   起動済みの疑似DOMの中で実際に関数を動かして確かめる。
+   読み上げは speak() を数える関数に差し替えて、呼ばれた回数で判定する。 */
+console.log('');
+console.log('[v1.5] よくつかう9枚 / ちいさく みせる / ほぞんの即よみ');
+const OLD_CORE = ['yes', 'noans', 'dontknow', 'want', 'no', 'more', 'bit', 'very', 'done', 'help',
+  'wait', 'look', 'come', 'go', 'this', 'notthis', 'what', 'where', 'who', 'when', 'ok',
+  'thanks', 'sorry', 'please'];
+const NEW_CORE = ['slowagain', 'writeit', 'whattodo', 'bywhen', 'howmuch', 'slowly',
+  'noscold', 'cantmove', 'nospeak'];
+let v15;
+try {
+  v15 = vm.runInContext(`(function () {
+    const r = {};
+    const grid = document.querySelector('#grid');
+    const spoken = [];
+    const realSpeak = speak;
+    speak = function (t) { spoken.push(t); return true; };
+    try {
+      // 1) よくつかう の並び(画面に出る順)
+      S.lang = 'ja'; curCat = 'core'; editMine = false;
+      grid.children.length = 0;
+      renderGrid();
+      r.coreIds = CARDS.filter(c => c.cat === 'core').map(c => c.id);
+      r.coreShown = grid.children.map(b => (b.children[1] || {}).textContent);
+      r.coreJa = r.coreIds.map(id => LBL.ja[id]);
+
+      // 2) ちいさく みせる(疑似DOMは class を読まないので、HTMLと同じく隠した状態から始める)
+      const sv = document.querySelector('#smallview');
+      const btn = document.querySelector('#btn-show-small');
+      const ta = document.querySelector('#show-text');
+      sv.classList.add('hidden');
+      document.querySelector('#bigview').classList.add('hidden');
+      document.querySelector('#mydlg').classList.add('hidden');
+      ta.value = ''; bar = [];
+      btn.onclick();
+      r.emptyStaysHidden = sv.classList.contains('hidden');
+      bar = [{ e: '💧', t: 'みず' }, { e: '🙏', t: 'ほしい' }];
+      btn.onclick();
+      r.barShown = !sv.classList.contains('hidden') && sv.textContent === 'みず、ほしい' && btn.classList.contains('on');
+      r.scanHasSmall = (scanTargets() || []).indexOf(sv) >= 0;
+      btn.onclick();
+      r.secondPressHides = sv.classList.contains('hidden') && !btn.classList.contains('on');
+      r.scanNoSmallWhenHidden = (scanTargets() || []).indexOf(sv) < 0;
+      ta.value = 'もじで かいてください';
+      btn.onclick();
+      r.showTextWins = !sv.classList.contains('hidden') && sv.textContent === 'もじで かいてください';
+      sv.onclick();
+      r.tapSmallHides = sv.classList.contains('hidden') && !btn.classList.contains('on');
+      r.smallSpoken = spoken.length;
+
+      // 3) ほぞんした文: 即よみ OFF なら読まずに文バーへ戻すだけ / ON なら読む
+      spoken.length = 0;
+      phrases = [{ id: 'p1', text: 'みず、ほしい', chips: [{ e: '💧', t: 'みず' }, { e: '🙏', t: 'ほしい' }] }];
+      curCat = 'saved'; editMine = false;
+      grid.children.length = 0;
+      renderGrid();
+      S.instant = false; bar = [];
+      grid.children[0].onclick();
+      r.offSpoken = spoken.length;
+      r.offBar = bar.map(c => c.t).join('|');
+      S.instant = true; bar = [];
+      grid.children[0].onclick();
+      r.onSpoken = spoken.slice();
+      r.onBar = bar.map(c => c.t).join('|');
+    } finally {
+      speak = realSpeak;
+    }
+    return r;
+  })()`, sandbox, { filename: 'v15-checks.js' });
+} catch (e) {
+  console.log('  NG  v1.5 の検査コードが例外で止まった: ' + e.message);
+  ng++;
+  v15 = null;
+}
+if (v15) {
+  const coreLen = v15.coreIds.length;
+  check('よくつかう の先頭24枚は前と同じ並び(場所で覚えている)',
+    JSON.stringify(v15.coreIds.slice(0, OLD_CORE.length)) === JSON.stringify(OLD_CORE));
+  check('新しい9枚が よくつかう の最後に決まった順で並ぶ',
+    coreLen === OLD_CORE.length + NEW_CORE.length &&
+    JSON.stringify(v15.coreIds.slice(-NEW_CORE.length)) === JSON.stringify(NEW_CORE));
+  check('画面にも同じ順で出る(最後の9枚の文言がLBL.jaと一致)',
+    v15.coreShown.length === coreLen &&
+    JSON.stringify(v15.coreShown.slice(-NEW_CORE.length)) === JSON.stringify(v15.coreJa.slice(-NEW_CORE.length)));
+  console.log('  よくつかう ' + coreLen + '枚 / 最後の9枚: ' + v15.coreShown.slice(-NEW_CORE.length).join(' / '));
+  check('ちいさく みせる: 文が空なら何も出さない', v15.emptyStaysHidden);
+  check('ちいさく みせる: みせるが空なら文バーの文を小さく出す(ボタンは押された状態)', v15.barShown);
+  check('ちいさく みせる: もう1回押すと消える', v15.secondPressHides);
+  check('ちいさく みせる: みせるに書いた文があればそちらを出す', v15.showTextWins);
+  check('ちいさく みせる: 小さい表示を押しても消える', v15.tapSmallHides);
+  check('ちいさく みせる: 音は鳴らさない(読み上げ0回)', v15.smallSpoken === 0);
+  check('ちいさく みせる: 出ている間はスイッチスキャンの対象に入る/消えたら外れる',
+    v15.scanHasSmall && v15.scanNoSmallWhenHidden);
+  check('ほぞん: 即よみ OFF で押しても読み上げない(0回)', v15.offSpoken === 0);
+  check('ほぞん: 即よみ OFF でも文バーには戻る', v15.offBar === 'みず|ほしい');
+  check('ほぞん: 即よみ ON なら今までどおり読み上げる',
+    v15.onSpoken.length === 1 && v15.onSpoken[0] === 'みず、ほしい' && v15.onBar === 'みず|ほしい');
+}
+check('index.html: 小さい表示は最初は隠れている', /<button id="smallview" class="hidden"/.test(html));
+const showSec = (/<section id="scr-show"[\s\S]*?<\/section>/.exec(html) || [''])[0];
+check('index.html: ちいさく みせる のボタンは「みせる」画面の中', /id="btn-show-small"/.test(showSec));
+const tabsNav = (/<nav id="tabs">[\s\S]*?<\/nav>/.exec(html) || [''])[0];
+check('フッターのタブは6個のまま(新しいタブを作らない)', (tabsNav.match(/<button/g) || []).length === 6);
+check('RTL(ar)では小さい表示を左すみに出す', /html\[dir="rtl"\]#smallview\{[^}]*right:auto;[^}]*left:/.test(css));
+check('小さい表示は文字サイズ設定(rem)に合わせ、はみ出さない(最大幅・最大高さ・折り返し)',
+  /#smallview\{[^}]*font-size:[0-9.]+rem/.test(css) && /#smallview\{[^}]*max-width:/.test(css) &&
+  /#smallview\{[^}]*max-height:/.test(css) && /#smallview\{[^}]*overflow-wrap:anywhere/.test(css));
+
 console.log('');
 if (ng) { console.error('SMOKE NG: ' + ng + '件 失敗 / OK ' + ok + '件'); process.exit(1); }
-console.log('SMOKE OK: セーフエリア/バージョン 全' + ok + '件 合格');
+console.log('SMOKE OK: セーフエリア/バージョン/v1.5 全' + ok + '件 合格');

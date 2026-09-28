@@ -265,7 +265,8 @@ function renderGrid() {
       const chips = p.chips || [];
       const emoji = chips.length ? chips.slice(0, 2).map(c => c.e || '🖼️').join('') : '📌';
       grid.appendChild(makeCard(emoji, p.text, () => {
-        speak(p.text);
+        // 「タップで すぐ よむ」が OFF のときは読み上げず、文バーに戻すだけ
+        if (S.instant) speak(p.text);
         bar = chips.map(c => ({ e: c.e, t: c.t, img: c.img }));
         renderBar(); buzz();
       }, editMine ? (() => delPhrase(p.id)) : undefined));
@@ -324,7 +325,11 @@ function scanTargets() {
   if (!root) return [];
   const els = [...root.querySelectorAll('button')]
     .filter(b => b.offsetParent !== null && !b.classList.contains('empty'));
-  if (root.id !== 'mydlg') els.push(...document.querySelectorAll('#tabs button'));
+  if (root.id !== 'mydlg') {
+    els.push(...document.querySelectorAll('#tabs button'));
+    // 「ちいさく みせる」が出ていれば、スイッチでも選んで消せるようにする
+    if (isSmallOpen()) els.push($('#smallview'));
+  }
   return els;
 }
 function scanBuildRows() {
@@ -596,10 +601,39 @@ function openBig(text) {
   $('#bigview').classList.remove('hidden');
   fitBigText();
 }
+// ---------- ちいさく みせる ----------
+// 固まってしまった瞬間に、周りに目立たず相手に見せるためのもの。
+// でか文字(全画面)とは別に、今の文を画面のすみに小さく出す。音は鳴らさない。
+// 出す文 = 「みせる」に書いてある文。空なら「はなす」の文バーの文。
+// どちらも空なら何もしない(「おおきく みせる」と同じ扱い)。
+function isSmallOpen() {
+  const sv = $('#smallview');
+  return !!sv && !sv.classList.contains('hidden');
+}
+function setSmallBtn(on) {
+  const b = $('#btn-show-small');
+  b.classList.toggle('on', on);
+  b.setAttribute('aria-pressed', on ? 'true' : 'false');
+}
+function closeSmall() {
+  $('#smallview').classList.add('hidden');
+  setSmallBtn(false);
+}
+function toggleSmall() {
+  if (isSmallOpen()) { closeSmall(); return; }
+  const text = $('#show-text').value.trim() || barText();
+  if (!text) return;
+  const sv = $('#smallview');
+  sv.textContent = text;
+  sv.classList.remove('hidden');
+  setSmallBtn(true);
+}
 function bindShow() {
   $('#btn-show-big').onclick = () => openBig($('#show-text').value.trim());
   $('#btn-show-say').onclick = () => speak($('#show-text').value.trim());
   $('#btn-show-from-bar').onclick = () => { $('#show-text').value = barText(); };
+  $('#btn-show-small').onclick = toggleSmall;
+  $('#smallview').onclick = closeSmall;
   $('#bigview').onclick = () => $('#bigview').classList.add('hidden');
   window.addEventListener('resize', () => {
     if (!$('#bigview').classList.contains('hidden')) fitBigText();
@@ -861,6 +895,7 @@ function applyI18n() {
     '#btn-say': '▶', '#er-title': t.erTitle, '#er-hint': t.erHint,
     '#show-title': t.showTitle,
     '#btn-show-big': t.showBig, '#btn-show-say': t.showSay, '#btn-show-from-bar': t.showFromBar,
+    '#btn-show-small': t.showSmall,
     '#show-hint': t.showHint,
     '#set-title': t.setTitle,
     '#lb-lang': t.setLang, '#lb-text': t.setText,

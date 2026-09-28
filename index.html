@@ -74,6 +74,8 @@
       <button id="btn-show-big" class="action brand"></button>
       <button id="btn-show-say" class="action"></button>
       <button id="btn-show-from-bar" class="action ghost"></button>
+      <!-- v1.5 ちいさく みせる: 既存ボタンの位置を動かさないよう一番下に足す -->
+      <button id="btn-show-small" class="action" aria-pressed="false"></button>
     </div>
     <p id="show-hint" class="hint"></p>
   </section>
@@ -162,7 +164,7 @@
       <span class="setlabel" id="lb-about"></span>
       <p id="about-text"></p>
       <p id="about-credit"></p>
-      <p class="ver">v1.4</p>
+      <p class="ver">v1.5</p>
     </div>
   </section>
 
@@ -183,6 +185,9 @@
 
 <!-- でかもじ表示 -->
 <div id="bigview" class="hidden"><div id="bigtext"></div></div>
+
+<!-- ちいさく みせる（画面のすみに小さく出す・音なし・押すと消える） -->
+<button id="smallview" class="hidden" type="button"></button>
 
 <!-- じぶんカード追加ダイアログ -->
 <div id="mydlg" class="hidden">
