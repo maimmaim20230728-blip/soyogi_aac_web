@@ -54,6 +54,9 @@ const I18N = {
     bkExport: '💾 かきだす', bkImport: '📂 よみこむ',
     bkHint: 'かきだした ファイルは たいせつに ほかんしてね。あたらしい たんまつで「よみこむ」と もとに もどせます。',
     bkDone: '✅ よみこみました！', bkFail: '⚠️ よみこめませんでした。ファイルを かくにんしてね。',
+    saveFail: '⚠️ ほぞん できませんでした。',
+    askYes: 'はい', askNo: 'いいえ',
+    backAsk: 'つくりかけの カードは まだ ほぞん していません。すてて もどりますか？',
     aboutTitle: 'このアプリについて',
     aboutText: 'そよぎ式AACアプリは、はなすことが むずかしい ひとのための むりょうの おはなしツールです。ひろこくも とうろくも いりません。かいた ことばは この たんまつの なかにだけ ほぞんされます。だれにも おくられません。',
     credit: '介護と支援の相談どころ「そよぎ」'
@@ -110,6 +113,9 @@ const I18N = {
     bkExport: '💾 Export', bkImport: '📂 Import',
     bkHint: 'Keep the exported file somewhere safe. Import it on a new device to restore everything.',
     bkDone: '✅ Imported!', bkFail: "⚠️ Couldn't import. Please check the file.",
+    saveFail: '⚠️ Could not save.',
+    askYes: 'Yes', askNo: 'No',
+    backAsk: 'This card is not saved yet. Discard it and go back?',
     aboutTitle: 'About this app',
     aboutText: 'Soyogi AAC is a free communication tool for people who have difficulty speaking. No ads, no sign-up. Everything you write stays on this device only. Nothing is ever sent anywhere.',
     credit: 'Soyogi — care & support counseling'

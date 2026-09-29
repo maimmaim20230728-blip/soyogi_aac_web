@@ -119,6 +119,9 @@ I18N.fr = {
   bkExport: '💾 Exporter', bkImport: '📂 Importer',
   bkHint: 'Garde précieusement le fichier exporté. Importe-le sur un nouvel appareil pour tout retrouver.',
   bkDone: '✅ Importé !', bkFail: '⚠️ Échec de l’import. Vérifie le fichier.',
+  saveFail: '⚠️ Impossible d’enregistrer.',
+  askYes: 'Oui', askNo: 'Non',
+  backAsk: 'Cette carte n’est pas encore enregistrée. L’abandonner et revenir en arrière ?',
   aboutTitle: 'À propos de cette appli',
   aboutText: 'Soyogi AAC est un outil de communication gratuit pour les personnes qui ont du mal à parler. Sans publicité ni inscription. Tout ce que tu écris reste uniquement sur cet appareil. Rien n’est jamais envoyé.',
   credit: 'Soyogi — conseil en soins et accompagnement'

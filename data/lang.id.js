@@ -119,6 +119,9 @@ I18N.id = {
   bkExport: '💾 Ekspor', bkImport: '📂 Impor',
   bkHint: 'Simpan baik-baik file hasil ekspor. Impor di perangkat baru untuk memulihkan semuanya.',
   bkDone: '✅ Berhasil diimpor!', bkFail: '⚠️ Gagal mengimpor. Periksa filenya.',
+  saveFail: '⚠️ Tidak dapat menyimpan.',
+  askYes: 'Ya', askNo: 'Tidak',
+  backAsk: 'Kartu ini belum disimpan. Buang dan kembali?',
   aboutTitle: 'Tentang aplikasi ini',
   aboutText: 'Soyogi AAC adalah alat komunikasi gratis untuk orang yang sulit berbicara. Tanpa iklan, tanpa daftar. Semua yang kamu tulis hanya tersimpan di perangkat ini. Tidak pernah dikirim ke mana pun.',
   credit: 'Soyogi — konsultasi perawatan dan dukungan'

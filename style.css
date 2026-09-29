@@ -432,3 +432,20 @@ html[dir="rtl"] #smallview {
   width: 56px; height: 56px; object-fit: cover;
   border-radius: 10px; border: 2px solid var(--line);
 }
+
+/* ---------- 確かめの窓（Play版の戻るボタン・app.js askBox・2026-09-30） ----------
+   Capacitor の window.confirm はボタンが英語の OK / Cancel になるので、アプリの中に出す。
+   でかもじ(50)・ダイアログ(40)より上。文字は rem なので「もじの おおきさ」に合わせる */
+.ask-ov {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(0,0,0,0.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+.ask-box {
+  background: #fff; border-radius: 18px; padding: 18px;
+  width: 100%; max-width: 420px; max-height: 100%; overflow-y: auto;
+}
+.ask-msg { font-size: 1.15rem; font-weight: bold; line-height: 1.6; margin: 0 0 14px; overflow-wrap: anywhere; }
+.ask-row { display: flex; gap: 8px; }

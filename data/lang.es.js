@@ -119,6 +119,9 @@ I18N.es = {
   bkExport: '💾 Exportar', bkImport: '📂 Importar',
   bkHint: 'Guarda bien el archivo exportado. Impórtalo en un dispositivo nuevo para recuperarlo todo.',
   bkDone: '✅ ¡Importado!', bkFail: '⚠️ No se pudo importar. Revisa el archivo.',
+  saveFail: '⚠️ No se pudo guardar.',
+  askYes: 'Sí', askNo: 'No',
+  backAsk: 'Esta tarjeta aún no está guardada. ¿Descartarla y volver?',
   aboutTitle: 'Acerca de esta app',
   aboutText: 'Soyogi AAC es una herramienta de comunicación gratuita para personas con dificultades para hablar. Sin anuncios ni registro. Todo lo que escribes se guarda solo en este dispositivo. Nunca se envía a ningún sitio.',
   credit: 'Soyogi — consultas de cuidados y apoyo'

@@ -118,6 +118,9 @@ I18N.zh = {
   bkExport: '💾 导出', bkImport: '📂 导入',
   bkHint: '请妥善保管导出的文件。在新设备上“导入”即可全部恢复。',
   bkDone: '✅ 导入成功！', bkFail: '⚠️ 导入失败。请检查文件。',
+  saveFail: '⚠️ 无法保存。',
+  askYes: '是', askNo: '否',
+  backAsk: '这张卡片还没有保存。要放弃并返回吗？',
   aboutTitle: '关于本应用',
   aboutText: 'Soyogi AAC 是为说话有困难的人提供的免费沟通工具。无广告、无需注册。您写的内容只保存在本设备上，绝不会发送到任何地方。',
   credit: 'Soyogi — 介护与支援咨询处'

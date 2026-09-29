@@ -323,12 +323,13 @@ function scanSpeedMs() {
 function scanTargets() {
   if (!$('#bigview').classList.contains('hidden')) return null; // でか文字中はスイッチ=閉じる
   let root;
-  if (!$('#mydlg').classList.contains('hidden')) root = $('#mydlg');
+  if (askOv) root = askOv;   // 確かめの窓(Play版の戻るボタン)が出ていれば、その いいえ/はい だけを選ぶ
+  else if (!$('#mydlg').classList.contains('hidden')) root = $('#mydlg');
   else root = document.querySelector('.screen:not(.hidden)');
   if (!root) return [];
   const els = [...root.querySelectorAll('button')]
     .filter(b => b.offsetParent !== null && !b.classList.contains('empty'));
-  if (root.id !== 'mydlg') {
+  if (root.id !== 'mydlg' && root !== askOv) {
     els.push(...document.querySelectorAll('#tabs button'));
     // 「ちいさく みせる」が出ていれば、スイッチでも選んで消せるようにする
     if (isSmallOpen()) els.push($('#smallview'));
@@ -422,19 +423,38 @@ function scanEnable(on) {
   syncSegs();
   if (on) scanStart(); else scanStop();
 }
+// 👻 あとから来るクリック(2026-09-30): スイッチの タップで「えらぶ」と、指を はなした あとに
+//   同じ指の click が とどく。えらんだのが せっていの「OFF」だったり、1.5びょう ながおしで OFF に
+//   もどしたときは、その click が 封じられずに、押していた場所の カードや タブに 当たっていた。
+//   スキャンの タップの あと 700ms・36px 以内の mousedown/mouseup/click(本物の指のもの)を捨てる。
+//   pointer イベントは捨てない。scanSelect の click()(isTrusted=false)は そのまま通す
+let scanPress = false;   // いまの タップは スキャン中に はじまった
+let scanGhost = null;    // { x, y, until }
+function isScanGhost(ev) {
+  if (!scanGhost || !ev.isTrusted) return false;
+  if (Date.now() > scanGhost.until) { scanGhost = null; return false; }
+  return Math.hypot((ev.clientX || 0) - scanGhost.x, (ev.clientY || 0) - scanGhost.y) <= 36;
+}
 function bindScan() {
   document.addEventListener('pointerdown', (ev) => {
     if (!S.scanOn) return;
     ev.preventDefault(); ev.stopPropagation();
+    scanPress = true;
     scanHold = setTimeout(() => { scanHold = null; scanEnable(false); }, 1500);
   }, true);
   document.addEventListener('pointerup', (ev) => {
+    if (scanPress) scanGhost = { x: ev.clientX || 0, y: ev.clientY || 0, until: Date.now() + 700 };
+    scanPress = false;
     if (!S.scanOn) { if (scanHold) { clearTimeout(scanHold); scanHold = null; } return; }
     ev.preventDefault(); ev.stopPropagation();
     if (scanHold) { clearTimeout(scanHold); scanHold = null; scanSelect(); }
   }, true);
+  ['mousedown', 'mouseup'].forEach(type => document.addEventListener(type, (ev) => {
+    if (isScanGhost(ev)) { ev.preventDefault(); ev.stopPropagation(); }
+  }, true));
   // スキャン中は生のタップclickを封じる（scanSelect経由のclick()のみ通す）
   document.addEventListener('click', (ev) => {
+    if (isScanGhost(ev)) { ev.preventDefault(); ev.stopPropagation(); scanGhost = null; return; }
     if (S.scanOn && ev.isTrusted) { ev.preventDefault(); ev.stopPropagation(); }
   }, true);
   document.addEventListener('keydown', (ev) => {
@@ -727,12 +747,22 @@ function bindMyDlg() {
 function bindBackup() {
   $('#btn-bk-export').onclick = () => {
     const data = { app: 'soyogi_aac', ver: 1, mycards: myCards, phrases: phrases, settings: S };
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const fname = 'soyogi-aac-backup-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.json';
+    // Play版(2026-09-30): Capacitor の WebView では <a download> で何も保存されない。
+    // 端末の一時フォルダに書いてから共有の画面を出し、保存先は利用者が選ぶ。閉じたら何も出さない・書けなければ知らせる
+    if (isNativeApp()) {
+      $('#bk-msg').textContent = '';
+      nativeSaveFile(fname, JSON.stringify(data), true, T().bkExport, (r) => {
+        if (r === 'fail') $('#bk-msg').textContent = T().saveFail;
+      });
+      return;
+    }
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    const d = new Date();
-    const pad = n => String(n).padStart(2, '0');
-    a.download = 'soyogi-aac-backup-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.json';
+    a.download = fname;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 3000);
   };
@@ -958,6 +988,133 @@ function bindTabs() {
   });
 }
 
+// ---------- Play版(Capacitor)の部品（2026-09-30） ----------
+// プラグインはネイティブが注入する Capacitor.Plugins.X を使う(registerPlugin は WebView には無い)
+function isNativeApp() {
+  try { const c = window.Capacitor; return !!(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform()); }
+  catch (e) { return false; }
+}
+function nativePlugin(name, fn) {
+  try {
+    const c = window.Capacitor;
+    if (typeof c.isPluginAvailable === 'function' && !c.isPluginAvailable(name)) return null;
+    const p = c.Plugins && c.Plugins[name];
+    return (p && typeof p[fn] === 'function') ? p : null;
+  } catch (e) { return null; }
+}
+// ファイルの保存: Capacitor の WebView には DownloadListener が無く、<a download> では何も保存されない。
+// 一時フォルダ(CACHE)に書いてから Android の共有の画面を出す。
+// done('ok')=送り先を選べた / done('quiet')=閉じた(何も出さない) / done('fail')=書けない・共有できない・プラグインが無い
+function shareQuiet(err) {
+  const m = String((err && (err.message || err.errorMessage)) || err || '');
+  return !!err && (err.name === 'AbortError' || /cancel|in progress/i.test(m));
+}
+function nativeSaveFile(name, data, utf8, label, done) {
+  const fsp = nativePlugin('Filesystem', 'writeFile'), shp = nativePlugin('Share', 'share');
+  if (!fsp || !shp) { done('fail'); return; }
+  const opt = { path: name, data: data, directory: 'CACHE' };
+  if (utf8) opt.encoding = 'utf8';
+  let w;
+  try { w = fsp.writeFile(opt); } catch (e) { done('fail'); return; }
+  if (!w || typeof w.then !== 'function') { done('fail'); return; }
+  w.then((r) => {
+    if (!r || !r.uri) { done('fail'); return; }
+    let s;
+    try { s = shp.share({ title: name, files: [r.uri], dialogTitle: label }); }
+    catch (err) { done(shareQuiet(err) ? 'quiet' : 'fail'); return; }
+    if (s && typeof s.then === 'function') s.then(() => done('ok'), (err) => done(shareQuiet(err) ? 'quiet' : 'fail'));
+    else done('ok');
+  }, () => done('fail'));
+}
+function minimizeApp() {
+  const ap = nativePlugin('App', 'minimizeApp');
+  try { if (ap) { const p = ap.minimizeApp(); if (p && p.catch) p.catch(() => {}); } } catch (e) {}
+}
+
+// ---------- アプリの中の確かめの窓（Play版だけ・2026-09-30） ----------
+// Play版の window.confirm は、Capacitor がボタンを英語の OK / Cancel に決め打ちしている。
+// Play版では アプリの中に「いいえ / はい」(14言語・もじの おおきさの せっていどおり)の窓を出す。
+// done(true=はい / false=いいえ)。戻るボタン=いいえ。Web版は window.confirm(ブラウザの言葉で出る)
+let askOv = null;   // 出ている確かめの窓(スキャン・戻るボタンが見る)
+function askBox(msg, done) {
+  if (!isNativeApp()) {
+    let r = false;
+    try { if (typeof window.confirm === 'function') r = !!window.confirm(msg); } catch (e) { r = false; }
+    done(r);
+    return;
+  }
+  const ov = document.createElement('div');
+  ov.className = 'ask-ov';
+  ov.setAttribute('role', 'alertdialog');
+  ov.setAttribute('aria-modal', 'true');
+  const box = document.createElement('div'); box.className = 'ask-box';
+  const p = document.createElement('p'); p.className = 'ask-msg'; p.textContent = msg;
+  const row = document.createElement('div'); row.className = 'ask-row';
+  const no = document.createElement('button'); no.type = 'button'; no.className = 'action ask-no'; no.textContent = T().askNo;
+  const yes = document.createElement('button'); yes.type = 'button'; yes.className = 'action brand ask-yes'; yes.textContent = T().askYes;
+  let closed = false;
+  const close = (v) => {
+    if (closed) return;
+    closed = true;
+    if (ov.parentNode) ov.parentNode.removeChild(ov);
+    if (askOv === ov) askOv = null;
+    if (S.scanOn) { scanBuildRows(); scanPaint(); }
+    done(v);
+  };
+  no.onclick = () => close(false);
+  yes.onclick = () => close(true);
+  row.appendChild(no); row.appendChild(yes);
+  box.appendChild(p); box.appendChild(row); ov.appendChild(box);
+  document.body.appendChild(ov);
+  askOv = ov;
+  if (S.scanOn) { scan.level = 1; scan.ri = 0; scan.ii = 0; scan.cycles = 0; scanBuildRows(); scanPaint(); }
+  try { no.focus(); } catch (e) {}
+}
+
+// ---------- Android の戻るボタン（Play版だけ・2026-09-30） ----------
+// @capacitor/app が無いと、戻るを押すと アプリごと後ろに下がっていた(Android 11 以前は閉じる)。
+// 押したときの順: ①いちばん上に重ねたもの=その「とじる/やめる/いいえ」と同じ
+//                   (確かめの窓=いいえ / でかもじ=タップで とじる / じぶんカードの窓=やめる / ちいさく みせる=けす)
+//                ②はなす の けすモード=「おわる」と同じ(けさずに もどる)
+//                ③はなす 以外の画面(きんきゅう・もじ・みせる・せってい)=はなす へ(下のタブで はなす を押したのと同じ)
+//                ④はなす=アプリを後ろに下げる(minimizeApp。文バーも かいた もじも そのまま)
+// じぶんカードの窓に ことば・えもじ・しゃしんを いれたまま戻るときは、先に たずねる(はい=すてて とじる / いいえ=そのまま)。
+// もじ・みせる の かいた もじは、画面を かえても きえないので たずねない。Web版(ブラウザ)は何も変えない
+const SCREEN_IDS = ['talk', 'er', 'kb', 'show', 'set'];
+function curScreen() {
+  return SCREEN_IDS.find(id => !$('#scr-' + id).classList.contains('hidden')) || 'talk';
+}
+function myDlgDirty() {
+  return !!($('#my-l').value.trim() || $('#my-e').value.trim() || dlgImg);
+}
+function onBack() {
+  if (askOv) { const no = askOv.querySelector('.ask-no'); if (no) no.click(); return; }
+  if (!$('#bigview').classList.contains('hidden')) { $('#bigview').onclick(); return; }
+  if (!$('#mydlg').classList.contains('hidden')) {
+    if (myDlgDirty()) {
+      askBox(T().backAsk, (ok) => { if (ok) $('#btn-my-cancel').onclick(); });
+      return;
+    }
+    $('#btn-my-cancel').onclick();
+    return;
+  }
+  if (isSmallOpen()) { closeSmall(); return; }
+  const cur = curScreen();
+  if (cur === 'talk' && editMine) { $('#btn-my-edit').onclick(); return; }
+  if (cur !== 'talk') {
+    const tb = document.querySelector('#tabs button[data-scr="talk"]');
+    if (tb) tb.onclick();
+    return;
+  }
+  minimizeApp();
+}
+function watchBack() {
+  if (!isNativeApp()) return;
+  const ap = nativePlugin('App', 'addListener');
+  if (!ap) return;
+  try { ap.addListener('backButton', () => onBack()); } catch (e) {}
+}
+
 // ---------- 全体再描画 ----------
 function renderAll() {
   renderCats();
@@ -994,6 +1151,7 @@ function boot() {
   bindSettings();
   bindBackup();
   bindScan();
+  watchBack();   // Android の戻るボタン(Play版だけ)
   if (S.scanOn) scanStart();
 
   applyBarSpace();
