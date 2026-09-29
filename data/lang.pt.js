@@ -124,5 +124,28 @@ I18N.pt = {
   backAsk: 'Este cartão ainda não foi salvo. Descartar e voltar?',
   aboutTitle: 'Sobre este app',
   aboutText: 'O Soyogi AAC é uma ferramenta de comunicação gratuita para pessoas com dificuldade de fala. Sem anúncios, sem cadastro. Tudo o que você escreve fica só neste aparelho. Nada é enviado a lugar nenhum.',
-  credit: 'Soyogi — orientação em cuidado e apoio'
+  credit: 'Soyogi — orientação em cuidado e apoio',
+  guide: {
+    title: 'Como usar', step: '{n} / {m}', prev: 'Voltar', next: 'Próximo', start: 'Começar', again: 'Ver de novo',
+    heads: [
+      'Boas-vindas ao {appName}',
+      '"{tabs.talk}": monte frases com cartões',
+      '"{tabs.er}"',
+      '"{tabs.kb}" e "{tabs.show}"',
+      'Crie seus próprios cartões',
+      'Usar com um acionador',
+      'O que você escreve fica neste aparelho',
+      'Ver e ouvir melhor'
+    ],
+    bodies: [
+      'Este app é uma ferramenta para se comunicar com cartões e texto quando falar é difícil.\nAs palavras que você toca são lidas em voz alta. Mesmo num aparelho sem voz, você pode mostrar suas palavras em letras grandes.\nEscolha o idioma acima, em "{setLang}".',
+      'Em "{tabs.talk}", embaixo, escolha "{cats.core}", "{cats.feel}" ou outro grupo para ver os cartões. Toque em um cartão e ele entra na frase lá em cima.\n▶ lê a frase em voz alta. ⌫ apaga um cartão e 🗑️ apaga todos.\nToque em ⭐ para guardar a frase em "{cats.saved}". Para apagar o que não precisa mais, use "{myEdit}".',
+      'Quando precisar de ajuda, toque em "{tabs.er}" embaixo.\nCartões como "{@erhelp}" e "{@erambulance}" são lidos em voz alta assim que você toca neles.\nEste app não faz ligações. Deixe as pessoas por perto ouvirem ou verem a mensagem.',
+      'Em "{tabs.kb}", embaixo, escreva com as teclas e toque em "{kbSay}" ou "{kbBig}".\nEm "{tabs.show}", embaixo, escreva o que quiser e toque em "{showBig}" para encher a tela. Toque na tela para fechar.\n"{showSmall}" mostra pequeno num canto da tela, sem som.',
+      'Em "{tabs.set}", vá até "{setMy}" e toque em "{myAdd}".\nPreencha "{myLabel}", toque em "{myPhotoPick}" ou digite um emoji e toque em "{mySave}".\nO cartão novo aparece em "{cats.mine}", dentro de "{tabs.talk}".',
+      'Em "{tabs.set}", coloque "{setScan}" em "{scanOn}" e uma moldura vai acendendo os itens um após o outro.\nPressione qualquer lugar da tela para escolher o que está aceso. Primeiro escolha uma linha, depois um botão dessa linha.\nSegure por 1,5 segundo para voltar a "{scanOff}".',
+      'Seus cartões e frases guardadas ficam só neste aparelho e nunca são enviados. Não precisa de cadastro.\nAo trocar de celular, toque em "{bkExport}" em "{tabs.set}" para guardar um arquivo e depois toque em "{bkImport}" no celular novo.',
+      'Em "{tabs.set}" você pode mudar "{setText}", "{setGrid}", "{setRate}" e "{setVoice}". Se colocar "{setInstant}" em "{off}", os cartões não são lidos assim que você toca neles.\nEscolha o idioma no 🌐 embaixo.\nVocê pode ver este guia de novo quando quiser em "{guide.again}", em "{guide.title}" dentro de "{tabs.set}".'
+    ]
+  }
 };

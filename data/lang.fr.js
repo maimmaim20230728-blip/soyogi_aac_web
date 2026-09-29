@@ -124,5 +124,28 @@ I18N.fr = {
   backAsk: 'Cette carte n’est pas encore enregistrée. L’abandonner et revenir en arrière ?',
   aboutTitle: 'À propos de cette appli',
   aboutText: 'Soyogi AAC est un outil de communication gratuit pour les personnes qui ont du mal à parler. Sans publicité ni inscription. Tout ce que tu écris reste uniquement sur cet appareil. Rien n’est jamais envoyé.',
-  credit: 'Soyogi — conseil en soins et accompagnement'
+  credit: 'Soyogi — conseil en soins et accompagnement',
+  guide: {
+    title: 'Mode d’emploi', step: '{n} / {m}', prev: 'Retour', next: 'Suivant', start: 'Commencer', again: 'Revoir',
+    heads: [
+      'Bienvenue dans {appName}',
+      '« {tabs.talk} » : faire une phrase avec des cartes',
+      '« {tabs.er} »',
+      '« {tabs.kb} » et « {tabs.show} »',
+      'Créer tes propres cartes',
+      'Utiliser avec un contacteur',
+      'Ce que tu écris reste sur cet appareil',
+      'Mieux voir et mieux entendre'
+    ],
+    bodies: [
+      'Cette appli est un outil pour communiquer avec des cartes et du texte quand parler est difficile.\nLes mots que tu touches sont lus à voix haute. Même sur un appareil sans voix, tu peux montrer tes mots en grand.\nChoisis la langue en haut, dans « {setLang} ».',
+      'Dans « {tabs.talk} », en bas, choisis « {cats.core} », « {cats.feel} » ou un autre groupe pour voir ses cartes. Touche une carte pour l’ajouter à la phrase en haut.\n▶ lit la phrase à voix haute. ⌫ efface une carte et 🗑️ les efface toutes.\nTouche ⭐ pour garder la phrase dans « {cats.saved} ». Pour effacer ce qui ne sert plus, utilise « {myEdit} ».',
+      'Quand tu as besoin d’aide, touche « {tabs.er} » en bas.\nLes cartes comme « {@erhelp} » ou « {@erambulance} » sont lues à voix haute dès que tu les touches.\nCette appli ne peut pas passer d’appel. Fais entendre ou montre le message aux personnes autour de toi.',
+      'Dans « {tabs.kb} », en bas, écris avec les touches, puis touche « {kbSay} » ou « {kbBig} ».\nDans « {tabs.show} », en bas, écris ce que tu veux et touche « {showBig} » pour remplir l’écran. Touche l’écran pour fermer.\n« {showSmall} » l’affiche en petit dans un coin de l’écran, sans son.',
+      'Dans « {tabs.set} », va à « {setMy} » et touche « {myAdd} ».\nRemplis « {myLabel} », touche « {myPhotoPick} » ou écris un émoji, puis touche « {mySave} ».\nLa nouvelle carte apparaît dans « {cats.mine} », dans « {tabs.talk} ».',
+      'Dans « {tabs.set} », mets « {setScan} » sur « {scanOn} » : un cadre éclaire les éléments l’un après l’autre.\nAppuie n’importe où sur l’écran pour choisir ce qui est éclairé. Choisis d’abord une ligne, puis un bouton de cette ligne.\nAppuie 1,5 seconde pour revenir à « {scanOff} ».',
+      'Tes cartes et tes phrases enregistrées restent seulement sur cet appareil et ne sont jamais envoyées. Aucune inscription n’est nécessaire.\nQuand tu changes de téléphone, touche « {bkExport} » dans « {tabs.set} » pour garder un fichier, puis touche « {bkImport} » sur le nouveau téléphone.',
+      'Dans « {tabs.set} », tu peux changer « {setText} », « {setGrid} », « {setRate} » et « {setVoice} ». Si tu mets « {setInstant} » sur « {off} », les cartes ne sont pas lues dès que tu les touches.\nChoisis la langue avec 🌐 en bas.\nTu peux revoir ce guide à tout moment avec « {guide.again} », dans « {guide.title} » de « {tabs.set} ».'
+    ]
+  }
 };

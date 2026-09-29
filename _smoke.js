@@ -64,7 +64,8 @@ const sandbox = {
   console,
   document: documentStub,
   navigator: {},
-  localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
+  // はじめての つかいかた(2026-09-30)は「読んだ」扱いで起動する(今までの検査を そのまま通す)。案内そのものは下の [つかいかた] で見る
+  localStorage: { getItem: (k) => (k === 'soyogi_aac.guide.v1' ? 'true' : null), setItem() {}, removeItem() {} },
   location: { hostname: 'smoke.test', protocol: 'https:' },
   addEventListener() {},
   setTimeout: () => 0, setInterval: () => 0, clearInterval() {}, clearTimeout() {},
@@ -281,6 +282,46 @@ check('小さい表示は文字サイズ設定(rem)に合わせ、はみ出さ�
   /#smallview\{[^}]*font-size:[0-9.]+rem/.test(css) && /#smallview\{[^}]*max-width:/.test(css) &&
   /#smallview\{[^}]*max-height:/.test(css) && /#smallview\{[^}]*overflow-wrap:anywhere/.test(css));
 
+/* ---- [つかいかた] はじめての つかいかた(2026-09-30) ----
+   まだ読んでいない端末(localStorage が空)で起動すると案内が出て、読んだ端末では出ない。
+   ほんものの動き(ページ送り・戻る・全言語)は store/_back_check.js(ヘッドレスChrome)で見る */
+console.log('');
+console.log('[つかいかた] はじめての つかいかた');
+check('index.html: せっていに「つかいかた」の行とボタンがある', ids.has('set-guide-row') && ids.has('lb-guide') && ids.has('btn-guide'));
+check('読んだ端末(種あり)では 案内は出ない', vm.runInContext('guideOv === null', sandbox));
+const fresh = Object.assign({}, sandbox, {
+  document: Object.assign({}, documentStub, { body: makeEl('body'), documentElement: Object.assign(makeEl('html'), { lang: '', dir: '' }) }),
+  localStorage: { getItem: () => null, setItem() {}, removeItem() {} }
+});
+fresh.window = fresh; fresh.globalThis = fresh;
+vm.createContext(fresh);
+let freshOk = true;
+try { vm.runInContext(src, fresh, { filename: 'app-bundle-fresh.js' }); }
+catch (e) { freshOk = false; console.log('    → ' + e.message); }
+check('まだ読んでいない端末(空)で起動しても 例外なし', freshOk);
+check('まだ読んでいない端末では 案内が出る(本文は日本語の1ページ目)', freshOk && vm.runInContext('!!guideOv', fresh) &&
+  fresh.document.body.children.indexOf(vm.runInContext('guideOv', fresh)) >= 0);
+const allCtx = { LBL: {}, I18N: {} };
+vm.createContext(allCtx);
+vm.runInContext(['./i18n.js', './data/cards.js'].concat(fs.readdirSync('./data').filter(f => /^lang\.[a-z]+\.js$/.test(f)).map(f => './data/' + f))
+  .map(f => fs.readFileSync(f, 'utf8')).join('\n') + '\n;globalThis.__g = { I18N, LBL };', allCtx);
+const G = allCtx.__g;
+const gLangs = Object.keys(G.I18N);
+check('案内: 14言語すべてに guide がある', gLangs.length === 14 && gLangs.every(l => G.I18N[l].guide && Array.isArray(G.I18N[l].guide.bodies)));
+const nPages = G.I18N.ja.guide.bodies.length;
+check('案内: ページ数は 5〜8(ja ' + nPages + 'ページ)・全言語で heads/bodies が同じ数', nPages >= 5 && nPages <= 8 &&
+  gLangs.every(l => G.I18N[l].guide.bodies.length === nPages && G.I18N[l].guide.heads.length === nPages));
+const tok = (s) => (String(s).match(/\{@?[A-Za-z0-9_.]+\}/g) || []).sort().join(' ');
+const tokBad = [];
+gLangs.forEach(l => G.I18N.ja.guide.bodies.forEach((b, i) => {
+  if (tok(G.I18N[l].guide.bodies[i]) !== tok(b)) tokBad.push(l + ':' + (i + 1));
+}));
+check('案内: 全言語で どのページも ja と同じ ボタン名({…})を あげている' + (tokBad.length ? '(' + tokBad.join(', ') + ')' : ''), tokBad.length === 0);
+const NG_WORDS = /子ども|こども|子供|キッズ|知育|児童|お子さま|kids|children|child|—|―|無料|むりょう|free/i;
+const wordBad = [];
+gLangs.forEach(l => { const g = G.I18N[l].guide; [g.title, g.prev, g.next, g.start, g.again].concat(g.heads, g.bodies).forEach(s => { if (NG_WORDS.test(s)) wordBad.push(l + ': ' + String(s).slice(0, 30)); }); });
+check('案内: 禁句・ダッシュ・価格の言葉が無い' + (wordBad.length ? '(' + wordBad.join(' / ') + ')' : ''), wordBad.length === 0);
+
 console.log('');
 if (ng) { console.error('SMOKE NG: ' + ng + '件 失敗 / OK ' + ok + '件'); process.exit(1); }
-console.log('SMOKE OK: セーフエリア/バージョン/v1.5 全' + ok + '件 合格');
+console.log('SMOKE OK: セーフエリア/バージョン/v1.5/つかいかた 全' + ok + '件 合格');

@@ -59,7 +59,31 @@ const I18N = {
     backAsk: 'つくりかけの カードは まだ ほぞん していません。すてて もどりますか？',
     aboutTitle: 'このアプリについて',
     aboutText: 'そよぎ式AACアプリは、はなすことが むずかしい ひとのための むりょうの おはなしツールです。ひろこくも とうろくも いりません。かいた ことばは この たんまつの なかにだけ ほぞんされます。だれにも おくられません。',
-    credit: '介護と支援の相談どころ「そよぎ」'
+    credit: '介護と支援の相談どころ「そよぎ」',
+    // はじめての つかいかた(2026-09-30)。本文の {tabs.talk} などは app.js の guideText が その言語の画面の文字に さしかえる。{@erhelp} は カードの ことば
+    guide: {
+      title: 'つかいかた', step: '{n} / {m}', prev: 'まえ', next: 'つぎ', start: 'はじめる', again: 'もういちど みる',
+      heads: [
+        '{appName}へ ようこそ',
+        '「{tabs.talk}」: カードで ぶんを つくる',
+        '「{tabs.er}」',
+        '「{tabs.kb}」と「{tabs.show}」',
+        'じぶんの カードを つくる',
+        'スイッチで つかう',
+        'かいた ことばは この たんまつの なかだけ',
+        'みやすさと こえ'
+      ],
+      bodies: [
+        'この アプリは、はなすことが むずかしい ときに、カードや もじで つたえる ための どうぐです。\nおした ことばは こえで よみあげます。こえが でない たんまつでも、もじを おおきく みせて つたえられます。\nつかう ことばは、うえの「{setLang}」で えらべます。',
+        'したの「{tabs.talk}」で「{cats.core}」「{cats.feel}」などを えらぶと、カードが でます。カードを おすと、うえの ぶんに ならびます。\n▶ で ぶんを よみあげます。⌫ で ひとつ けし、🗑️ で ぜんぶ けします。\n⭐ を おすと、ぶんが「{cats.saved}」に のこります。いらなく なったら「{myEdit}」で けせます。',
+        'こまった ときは、したの「{tabs.er}」を おします。\n「{@erhelp}」「{@erambulance}」などの カードを おすと、すぐに よみあげます。\nこの アプリから でんわは かけられません。まわりの ひとに きかせたり みせたり してください。',
+        'したの「{tabs.kb}」では、キーを おして もじを かき、「{kbSay}」か「{kbBig}」を おします。\nしたの「{tabs.show}」では、じゆうに かいた もじを「{showBig}」で がめん いっぱいに だします。とじるには がめんを タップします。\n「{showSmall}」は、がめんの すみに ちいさく だします。おとは でません。',
+        '「{tabs.set}」の「{setMy}」で「{myAdd}」を おします。\n「{myLabel}」を いれ、「{myPhotoPick}」を おすか えもじを いれて、「{mySave}」を おします。\nできた カードは、「{tabs.talk}」の「{cats.mine}」に でてきます。',
+        '「{tabs.set}」の「{setScan}」を「{scanOn}」に すると、わくが じゅんばんに ひかります。\nがめんの どこを おしても、ひかって いる ものを えらべます。まず ならびを えらび、つぎに その なかの ボタンを えらびます。\n1.5びょう ながおしすると「{scanOff}」に もどります。',
+        'じぶんの カードや ほぞんした ぶんは、この たんまつの なかだけに ほぞんされ、どこにも おくられません。とうろくも いりません。\nスマホを かえる ときは、「{tabs.set}」の「{bkExport}」で ファイルを のこし、あたらしい スマホで「{bkImport}」を おします。',
+        '「{tabs.set}」で「{setText}」「{setGrid}」「{setRate}」「{setVoice}」を かえられます。「{setInstant}」を「{off}」に すると、カードを おしても すぐには よみあげません。\nことばは、したの 🌐 で えらべます。\nこの あんないは、「{tabs.set}」の「{guide.title}」の「{guide.again}」で いつでも もう いちど みられます。'
+      ]
+    }
   },
   en: {
     appName: 'Soyogi AAC',
@@ -118,6 +142,29 @@ const I18N = {
     backAsk: 'This card is not saved yet. Discard it and go back?',
     aboutTitle: 'About this app',
     aboutText: 'Soyogi AAC is a free communication tool for people who have difficulty speaking. No ads, no sign-up. Everything you write stays on this device only. Nothing is ever sent anywhere.',
-    credit: 'Soyogi — care & support counseling'
+    credit: 'Soyogi — care & support counseling',
+    guide: {
+      title: 'How to use', step: '{n} / {m}', prev: 'Back', next: 'Next', start: 'Start', again: 'Show again',
+      heads: [
+        'Welcome to {appName}',
+        '"{tabs.talk}": build a sentence with cards',
+        '"{tabs.er}"',
+        '"{tabs.kb}" and "{tabs.show}"',
+        'Make your own cards',
+        'Use with a switch',
+        'What you write stays on this device',
+        'Easier to see and hear'
+      ],
+      bodies: [
+        'This app is a tool for communicating with cards and text when speaking is difficult.\nThe words you tap are read aloud. Even on a device without voice output, you can show your words in large text.\nChoose your language above, in "{setLang}".',
+        'In "{tabs.talk}" at the bottom, choose "{cats.core}", "{cats.feel}" or another group to see its cards. Tap a card to add it to the sentence at the top.\n▶ reads the sentence aloud. ⌫ deletes one card and 🗑️ clears them all.\nTap ⭐ to keep the sentence in "{cats.saved}". To delete what you no longer need, use "{myEdit}".',
+        'When you need help, tap "{tabs.er}" at the bottom.\nCards such as "{@erhelp}" and "{@erambulance}" are read aloud as soon as you tap them.\nThis app cannot make phone calls. Let the people around you hear or see the message.',
+        'In "{tabs.kb}" at the bottom, write with the keys, then tap "{kbSay}" or "{kbBig}".\nIn "{tabs.show}" at the bottom, write anything and tap "{showBig}" to fill the screen with it. Tap the screen to close it.\n"{showSmall}" shows it small in a corner of the screen, without sound.',
+        'In "{tabs.set}", go to "{setMy}" and tap "{myAdd}".\nFill in "{myLabel}", tap "{myPhotoPick}" or type an emoji, then tap "{mySave}".\nYour new card appears in "{cats.mine}" in "{tabs.talk}".',
+        'In "{tabs.set}", set "{setScan}" to "{scanOn}" and a frame lights up the items one after another.\nPress anywhere on the screen to choose what is lit. First choose a row, then a button in that row.\nHold for 1.5 seconds to go back to "{scanOff}".',
+        'Your own cards and saved sentences are stored only on this device and are never sent anywhere. No sign-up is needed.\nWhen you change phones, tap "{bkExport}" in "{tabs.set}" to keep a file, then tap "{bkImport}" on the new phone.',
+        'In "{tabs.set}" you can change "{setText}", "{setGrid}", "{setRate}" and "{setVoice}". If you set "{setInstant}" to "{off}", cards are not read aloud as soon as you tap them.\nChoose the language with 🌐 at the bottom.\nYou can see this guide again at any time with "{guide.again}" under "{guide.title}" in "{tabs.set}".'
+      ]
+    }
   }
 };

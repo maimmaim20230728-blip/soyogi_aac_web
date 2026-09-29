@@ -124,5 +124,28 @@ I18N.id = {
   backAsk: 'Kartu ini belum disimpan. Buang dan kembali?',
   aboutTitle: 'Tentang aplikasi ini',
   aboutText: 'Soyogi AAC adalah alat komunikasi gratis untuk orang yang sulit berbicara. Tanpa iklan, tanpa daftar. Semua yang kamu tulis hanya tersimpan di perangkat ini. Tidak pernah dikirim ke mana pun.',
-  credit: 'Soyogi — konsultasi perawatan dan dukungan'
+  credit: 'Soyogi — konsultasi perawatan dan dukungan',
+  guide: {
+    title: 'Cara pakai', step: '{n} / {m}', prev: 'Kembali', next: 'Lanjut', start: 'Mulai', again: 'Lihat lagi',
+    heads: [
+      'Selamat datang di {appName}',
+      '"{tabs.talk}": membuat kalimat dengan kartu',
+      '"{tabs.er}"',
+      '"{tabs.kb}" dan "{tabs.show}"',
+      'Membuat kartu sendiri',
+      'Memakai sakelar',
+      'Tulisanmu hanya ada di perangkat ini',
+      'Lebih mudah dilihat dan didengar'
+    ],
+    bodies: [
+      'Aplikasi ini adalah alat untuk menyampaikan sesuatu dengan kartu dan tulisan saat berbicara terasa sulit.\nKata yang kamu ketuk akan dibacakan. Di perangkat tanpa suara pun, kamu bisa menampilkan kata-katamu dengan huruf besar.\nPilih bahasa di atas, pada "{setLang}".',
+      'Di "{tabs.talk}" bagian bawah, pilih "{cats.core}", "{cats.feel}", atau kelompok lain agar kartunya muncul. Ketuk kartu, lalu kartu itu masuk ke kalimat di atas.\n▶ membacakan kalimat. ⌫ menghapus satu, 🗑️ menghapus semua.\nKetuk ⭐ untuk menyimpan kalimat di "{cats.saved}". Yang tidak diperlukan lagi bisa dihapus dengan "{myEdit}".',
+      'Saat butuh bantuan, ketuk "{tabs.er}" di bawah.\nKartu seperti "{@erhelp}" dan "{@erambulance}" langsung dibacakan saat diketuk.\nAplikasi ini tidak bisa menelepon. Perdengarkan atau perlihatkan pesannya kepada orang di sekitarmu.',
+      'Di "{tabs.kb}" bagian bawah, tulis dengan tombol huruf, lalu ketuk "{kbSay}" atau "{kbBig}".\nDi "{tabs.show}" bagian bawah, tulis apa saja lalu ketuk "{showBig}" agar memenuhi layar. Ketuk layar untuk menutup.\n"{showSmall}" menampilkannya kecil di sudut layar, tanpa suara.',
+      'Di "{tabs.set}", buka "{setMy}" lalu ketuk "{myAdd}".\nIsi "{myLabel}", ketuk "{myPhotoPick}" atau ketik emoji, lalu ketuk "{mySave}".\nKartu baru muncul di "{cats.mine}" pada "{tabs.talk}".',
+      'Di "{tabs.set}", ubah "{setScan}" menjadi "{scanOn}", lalu sebuah bingkai akan menyorot item satu per satu.\nTekan di mana saja pada layar untuk memilih yang sedang disorot. Pilih baris dulu, lalu tombol di baris itu.\nTahan 1,5 detik untuk kembali ke "{scanOff}".',
+      'Kartu dan kalimat yang kamu simpan hanya disimpan di perangkat ini dan tidak pernah dikirim ke mana pun. Tidak perlu mendaftar.\nSaat ganti ponsel, ketuk "{bkExport}" di "{tabs.set}" untuk menyimpan file, lalu ketuk "{bkImport}" di ponsel baru.',
+      'Di "{tabs.set}" kamu bisa mengubah "{setText}", "{setGrid}", "{setRate}", dan "{setVoice}". Jika "{setInstant}" diubah ke "{off}", kartu tidak langsung dibacakan saat diketuk.\nPilih bahasa dengan 🌐 di bawah.\nPanduan ini bisa dilihat lagi kapan saja lewat "{guide.again}" pada "{guide.title}" di "{tabs.set}".'
+    ]
+  }
 };

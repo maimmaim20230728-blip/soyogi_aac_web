@@ -123,5 +123,28 @@ I18N.zh = {
   backAsk: '这张卡片还没有保存。要放弃并返回吗？',
   aboutTitle: '关于本应用',
   aboutText: 'Soyogi AAC 是为说话有困难的人提供的免费沟通工具。无广告、无需注册。您写的内容只保存在本设备上，绝不会发送到任何地方。',
-  credit: 'Soyogi — 介护与支援咨询处'
+  credit: 'Soyogi — 介护与支援咨询处',
+  guide: {
+    title: '使用方法', step: '{n} / {m}', prev: '上一步', next: '下一步', start: '开始', again: '再看一次',
+    heads: [
+      '欢迎使用 {appName}',
+      '“{tabs.talk}”：用卡片造句',
+      '“{tabs.er}”',
+      '“{tabs.kb}”和“{tabs.show}”',
+      '制作自己的卡片',
+      '用开关操作',
+      '写下的内容只保存在本设备',
+      '更容易看、更容易听'
+    ],
+    bodies: [
+      '本应用是在说话有困难时，用卡片和文字来表达的工具。\n点按的词语会被朗读出来。即使设备不能发声，也可以把文字放大给对方看。\n可以在上方的“{setLang}”中选择语言。',
+      '在下方的“{tabs.talk}”中选择“{cats.core}”“{cats.feel}”等分类，就会出现卡片。点按卡片，它会排进最上方的句子里。\n▶ 朗读句子。⌫ 删除一个，🗑️ 全部删除。\n点 ⭐ 可以把句子保存到“{cats.saved}”。不需要的可以用“{myEdit}”删除。',
+      '遇到困难时，请点下方的“{tabs.er}”。\n点按“{@erhelp}”“{@erambulance}”等卡片，会立即朗读。\n本应用不能打电话。请让周围的人听到或看到。',
+      '在下方的“{tabs.kb}”中，在输入框里写字，然后点“{kbSay}”或“{kbBig}”。\n在下方的“{tabs.show}”中，自由书写后点“{showBig}”，文字会铺满整个屏幕。点按屏幕即可关闭。\n“{showSmall}”会在屏幕角落小小地显示，不发出声音。',
+      '在“{tabs.set}”的“{setMy}”中点“{myAdd}”。\n填写“{myLabel}”，点“{myPhotoPick}”或输入表情符号，然后点“{mySave}”。\n做好的卡片会出现在“{tabs.talk}”的“{cats.mine}”里。',
+      '在“{tabs.set}”中把“{setScan}”设为“{scanOn}”，边框会依次亮起。\n按屏幕任何地方，就能选中亮起的项目。先选一行，再选这一行里的按钮。\n长按 1.5 秒会回到“{scanOff}”。',
+      '自己的卡片和保存的句子只保存在本设备中，不会发送到任何地方。也不需要注册。\n换手机时，在“{tabs.set}”中点“{bkExport}”保存文件，再在新手机上点“{bkImport}”。',
+      '在“{tabs.set}”中可以更改“{setText}”“{setGrid}”“{setRate}”“{setVoice}”。把“{setInstant}”设为“{off}”后，点按卡片时不会立即朗读。\n语言可以用下方的 🌐 选择。\n本说明随时可以在“{tabs.set}”的“{guide.title}”中点“{guide.again}”再次查看。'
+    ]
+  }
 };

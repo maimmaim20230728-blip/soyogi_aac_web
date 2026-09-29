@@ -449,3 +449,45 @@ html[dir="rtl"] #smallview {
 }
 .ask-msg { font-size: 1.15rem; font-weight: bold; line-height: 1.6; margin: 0 0 14px; overflow-wrap: anywhere; }
 .ask-row { display: flex; gap: 8px; }
+
+/* ---------- はじめての つかいかた（app.js openGuide・2026-09-30） ----------
+   初回に出す案内。画面ぜんたい(下のタブの上)に重ねる。でかもじ(50)・ダイアログ(40)より上、確かめの窓(60)より下。
+   ボタンは下に固定した帯(地の色つき=長いページでも本文が透けない)。本文の下は app.js が 帯の実寸+24px 空ける(ここは その前の下限)。
+   文字は rem なので「もじの おおきさ」に合わせて大きくなる */
+.guide-ov {
+  position: fixed; inset: 0; z-index: 55;
+  background: var(--bg);
+  overflow-y: auto;
+  padding: calc(16px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           calc(150px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+.guide-box { width: 100%; max-width: 560px; margin: 0 auto; }
+.guide-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.guide-title { margin: 0; font-weight: bold; color: var(--brand-dark); }
+.guide-step { margin: 0; color: #5c6f64; font-weight: bold; white-space: nowrap; unicode-bidi: isolate; }   /* 向きは app.js が dir=ltr にする(ar で「8 / 1」にしない) */
+/* 初回の案内の「🚨 きんきゅう」(きんきゅう の カードと 同じ いろ) */
+.guide-sos {
+  display: block; margin: 12px 0 0; min-height: 48px; max-width: 100%;
+  border: 3px solid #e8b0b0; background: #fff5f5; color: #8f2626; font-weight: bold;
+  overflow-wrap: anywhere; text-align: start;
+}
+.guide-sos:active { background: #ffdcdc; border-color: var(--danger); }
+.guide-lang { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 12px 0 0; }
+.guide-lang select {
+  min-height: 44px; max-width: 100%; font-size: 1rem; font-family: inherit;
+  border: 2px solid var(--line); border-radius: 10px; background: var(--card-bg); color: var(--ink); padding: 2px 8px;
+}
+.guide-h { font-size: 1.35rem; line-height: 1.45; margin: 16px 0 12px; word-break: keep-all; overflow-wrap: anywhere; }
+.guide-p { font-size: 1.1rem; line-height: 1.85; margin: 0; white-space: pre-line; word-break: keep-all; overflow-wrap: anywhere; }
+/* 中国語は 分かち書きで ないので ふつうに 折り返す(keep-all だと 句読点でしか 折れず、はみ出す所で「。」が 行の頭に のこる) */
+html[lang="zh"] .guide-h, html[lang="zh"] .guide-p { word-break: normal; }
+.guide-dots { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; }
+.guide-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.guide-dot.on { background: var(--brand); }
+.guide-row {
+  position: fixed; z-index: 56; left: 0; right: 0; bottom: 0;
+  display: flex; gap: 10px;
+  padding: 10px max(16px, env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: var(--bg); border-top: 2px solid var(--line);
+}
+.guide-row .action { min-width: 0; min-height: 64px; overflow-wrap: anywhere; }

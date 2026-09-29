@@ -124,5 +124,28 @@ I18N.es = {
   backAsk: 'Esta tarjeta aún no está guardada. ¿Descartarla y volver?',
   aboutTitle: 'Acerca de esta app',
   aboutText: 'Soyogi AAC es una herramienta de comunicación gratuita para personas con dificultades para hablar. Sin anuncios ni registro. Todo lo que escribes se guarda solo en este dispositivo. Nunca se envía a ningún sitio.',
-  credit: 'Soyogi — consultas de cuidados y apoyo'
+  credit: 'Soyogi — consultas de cuidados y apoyo',
+  guide: {
+    title: 'Cómo usar', step: '{n} / {m}', prev: 'Atrás', next: 'Siguiente', start: 'Empezar', again: 'Ver otra vez',
+    heads: [
+      'Te damos la bienvenida a {appName}',
+      '"{tabs.talk}": forma frases con tarjetas',
+      '"{tabs.er}"',
+      '"{tabs.kb}" y "{tabs.show}"',
+      'Crea tus propias tarjetas',
+      'Usar con un conmutador',
+      'Lo que escribes se queda en este dispositivo',
+      'Ver y oír mejor'
+    ],
+    bodies: [
+      'Esta app es una herramienta para comunicarte con tarjetas y texto cuando hablar es difícil.\nLas palabras que tocas se leen en voz alta. Aunque el dispositivo no tenga voz, puedes mostrar tus palabras en letra grande.\nElige el idioma arriba, en "{setLang}".',
+      'En "{tabs.talk}", abajo, elige "{cats.core}", "{cats.feel}" u otro grupo para ver sus tarjetas. Toca una tarjeta y se añade a la frase de arriba.\n▶ lee la frase en voz alta. ⌫ borra una tarjeta y 🗑️ las borra todas.\nToca ⭐ para guardar la frase en "{cats.saved}". Para borrar lo que ya no necesitas, usa "{myEdit}".',
+      'Cuando necesites ayuda, toca "{tabs.er}" abajo.\nTarjetas como "{@erhelp}" o "{@erambulance}" se leen en voz alta en cuanto las tocas.\nEsta app no puede hacer llamadas. Haz que las personas de tu alrededor oigan o vean el mensaje.',
+      'En "{tabs.kb}", abajo, escribe con las teclas y toca "{kbSay}" o "{kbBig}".\nEn "{tabs.show}", abajo, escribe lo que quieras y toca "{showBig}" para llenar la pantalla. Toca la pantalla para cerrarlo.\n"{showSmall}" lo muestra pequeño en una esquina de la pantalla, sin sonido.',
+      'En "{tabs.set}", ve a "{setMy}" y toca "{myAdd}".\nRellena "{myLabel}", toca "{myPhotoPick}" o escribe un emoji, y toca "{mySave}".\nLa tarjeta nueva aparece en "{cats.mine}", dentro de "{tabs.talk}".',
+      'En "{tabs.set}", pon "{setScan}" en "{scanOn}" y un marco irá iluminando los elementos uno tras otro.\nPulsa en cualquier parte de la pantalla para elegir lo que está iluminado. Primero eliges una fila y luego un botón de esa fila.\nMantén pulsado 1,5 segundos para volver a "{scanOff}".',
+      'Tus tarjetas y frases guardadas se quedan solo en este dispositivo y nunca se envían a ningún sitio. No hace falta registrarse.\nCuando cambies de teléfono, toca "{bkExport}" en "{tabs.set}" para guardar un archivo y luego toca "{bkImport}" en el teléfono nuevo.',
+      'En "{tabs.set}" puedes cambiar "{setText}", "{setGrid}", "{setRate}" y "{setVoice}". Si pones "{setInstant}" en "{off}", las tarjetas no se leen en cuanto las tocas.\nElige el idioma con 🌐, abajo.\nPuedes volver a ver esta guía cuando quieras con "{guide.again}", en "{guide.title}" dentro de "{tabs.set}".'
+    ]
+  }
 };

@@ -324,12 +324,13 @@ function scanTargets() {
   if (!$('#bigview').classList.contains('hidden')) return null; // でか文字中はスイッチ=閉じる
   let root;
   if (askOv) root = askOv;   // 確かめの窓(Play版の戻るボタン)が出ていれば、その いいえ/はい だけを選ぶ
+  else if (guideOv) root = guideOv;   // はじめての つかいかた が出ていれば、その まえ / つぎ / はじめる だけを選ぶ
   else if (!$('#mydlg').classList.contains('hidden')) root = $('#mydlg');
   else root = document.querySelector('.screen:not(.hidden)');
   if (!root) return [];
   const els = [...root.querySelectorAll('button')]
-    .filter(b => b.offsetParent !== null && !b.classList.contains('empty'));
-  if (root.id !== 'mydlg' && root !== askOv) {
+    .filter(b => b.offsetParent !== null && !b.classList.contains('empty') && b.style.visibility !== 'hidden');
+  if (root.id !== 'mydlg' && root !== askOv && root !== guideOv) {
     els.push(...document.querySelectorAll('#tabs button'));
     // 「ちいさく みせる」が出ていれば、スイッチでも選んで消せるようにする
     if (isSmallOpen()) els.push($('#smallview'));
@@ -348,6 +349,11 @@ function scanBuildRows() {
     cur.push(x.el);
   });
   rows.forEach(r => r.sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left));
+  // はじめての つかいかた: いつも「まえ / つぎ」の ならびから(上の 🚨 きんきゅう は その つぎ。ページを めくるたびに 🚨 から はじまらない)
+  if (guideOv && rows.length > 1) {
+    const k = rows.findIndex(r => r.some(b => b.classList.contains('guide-next')));
+    if (k > 0) rows.unshift(rows.splice(k, 1)[0]);
+  }
   scan.rows = rows;
   if (scan.ri >= rows.length) scan.ri = 0;
 }
@@ -854,17 +860,18 @@ function bindLangTab() {
     sel.appendChild(o);
   });
   sel.value = S.lang;
-  sel.onchange = () => {
-    const v = sel.value;
-    loadLang(v, (ok) => {
-      if (!ok) { sel.value = S.lang; return; }
-      S.lang = v;
-      saveJSON(LS_SET, S);
-      applySettings();
-      applyI18n();
-      renderAll();
-    });
-  };
+  sel.onchange = () => switchLang(sel.value, () => { sel.value = S.lang; });
+}
+// ことばを かえる(🌐 と はじめての つかいかた の 1ページ目で同じ しくみ)。よみこめなければ onFail
+function switchLang(v, onFail) {
+  loadLang(v, (ok) => {
+    if (!ok) { if (onFail) onFail(); return; }
+    S.lang = v;
+    saveJSON(LS_SET, S);
+    applySettings();
+    applyI18n();
+    renderAll();
+  });
 }
 function bindSettings() {
   bindSeg('#seg-text', null, v => { S.textSize = v; });
@@ -903,6 +910,7 @@ function applyBarSpace() {
   if (!tb || !tb.getBoundingClientRect) return;
   const h = Math.ceil(tb.getBoundingClientRect().height);
   if (h > 0) st.setProperty('--tabbar-h', h + 'px');
+  if (guideOv && guideOv._fit) guideOv._fit();   // はじめての つかいかた の 下の帯も 測り直す(もじの おおきさ・回転)
 }
 function watchBarSpace() {
   if (typeof ResizeObserver === 'undefined') return false;
@@ -944,6 +952,7 @@ function applyI18n() {
     '#lb-backup': t.setBackup, '#btn-bk-export': t.bkExport, '#btn-bk-import': t.bkImport,
     '#bk-hint': t.bkHint,
     '#lb-about': t.aboutTitle, '#about-text': t.aboutText,
+    '#lb-guide': (t.guide || {}).title, '#btn-guide': (t.guide || {}).again,
     '#dlg-lb-emoji': t.myEmoji, '#dlg-lb-label': t.myLabel, '#dlg-hint': t.myHint,
     '#dlg-lb-photo': t.myPhoto, '#btn-my-photo': t.myPhotoPick, '#btn-my-photo-clear': t.myPhotoClear,
     '#btn-my-save': t.mySave, '#btn-my-cancel': t.myCancel,
@@ -972,6 +981,7 @@ function applyI18n() {
   $('#btn-clear').setAttribute('aria-label', t.clear);
   document.title = t.appName;
   applyBarSpace();   // 言語でタブ名の折り返しが変わる → 下タブの高さを測り直す
+  if (guideOv && guideOv._draw) guideOv._draw();   // はじめての つかいかた も いまの ページのまま 訳し直す
 }
 
 // ---------- タブ ----------
@@ -1071,6 +1081,125 @@ function askBox(msg, done) {
   try { no.focus(); } catch (e) {}
 }
 
+// ---------- はじめての つかいかた（初回の案内・2026-09-30） ----------
+// ヒロさん「ひとつずつ・そよぎ みたいなタイプのアプリは、必ず最初に使い方の丁寧な説明を出してほしい。10代の情報室のように」。
+// ・初回起動で かならず出す(さいごまで よむまで、ひらくたびに出る)。前からの利用者にも 更新のあと 1回だけ出る
+// ・文字は I18N.<ことば>.guide(title / step / prev / next / start / again / heads[] / bodies[])。
+//   本文の {tabs.talk} などは その言語の画面の文字に さしかえる(ボタン名が画面と かならず同じ)。{@erhelp} は カードの ことば
+// ・1ページずつ「つぎ」「まえ」。とじるのは さいごの ページの「はじめる」だけ(× は おかない)
+// ・戻るボタン(Play版): 2ページ目から=まえの ページ / 1ページ目=初回なら後ろに下げる(とじない)、せっていから ひらいたときは とじる
+// ・スイッチ入力(スキャン)中は、案内の まえ / つぎ / はじめる だけを えらぶ(確かめの窓と同じ。1ページ目の まえ は かくれている)
+// ・1ページ目に ことばの えらびかた(下の 🌐 と同じ ならび)。案内は 下の 🌐 も おおうため
+// ・初回の案内には どの ページにも「🚨 きんきゅう」(下の タブと 同じ)。おすと 案内を とじて きんきゅう へ(読んだ ことには しない)
+// ・読み終えたら soyogi_aac.guide.v1 = true。せっていの「つかいかた」の「もういちど みる」で いつでも ひらける
+const LS_GUIDE = 'soyogi_aac.guide.v1';
+let guideOv = null;   // 出ている案内(スキャン・戻るボタン・ことばの切りかえが見る)
+function guideDone() { return loadJSON(LS_GUIDE, false) === true; }
+function guideText(s) {
+  return String(s == null ? '' : s).replace(/\{(@?)([A-Za-z0-9_.]+)\}/g, (m, at, key) => {
+    if (at) { const v = lbl(key); return v === key ? m : v; }
+    const v = key.split('.').reduce((o, k) => (o && o[k] != null) ? o[k] : undefined, T());
+    return typeof v === 'string' ? v : m;   // 見つからなければ {…} のまま(試しで見つける)
+  });
+}
+function openGuide(first) {
+  const g0 = T().guide;
+  if (guideOv || !g0 || !Array.isArray(g0.bodies) || !g0.bodies.length) return;
+  let i = 0;
+  const mk = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
+  const ov = mk('div', 'guide-ov');
+  ov.setAttribute('role', 'dialog');
+  ov.setAttribute('aria-modal', 'true');
+  const box = mk('div', 'guide-box');
+  const top = mk('div', 'guide-top');
+  const ttl = mk('p', 'guide-title');
+  const step = mk('p', 'guide-step');
+  top.appendChild(ttl); top.appendChild(step);
+  // 🚨 きんきゅう(初回の案内だけ): 案内は 下の「きんきゅう」の タブも おおうので、案内の中にも おく。
+  //   おすと 案内を とじて きんきゅう の がめんへ(読んだ しるしは のこさない=つぎに ひらいたとき また出る)。
+  //   前から つかっている人が 更新の あと すぐに たすけを よびたい ときに、8ページ よまなくても とどくように
+  let sosB = null;
+  if (first) {
+    sosB = mk('button', 'pill guide-sos');
+    sosB.type = 'button';
+  }
+  const langRow = mk('div', 'guide-lang');
+  const langLbl = mk('span', 'guide-lang-lbl');
+  const langSel = document.createElement('select');
+  langSel.setAttribute('aria-label', 'Language / ことば');
+  LANGS.forEach(([code, name]) => {
+    const o = document.createElement('option');
+    o.value = code; o.textContent = name;
+    langSel.appendChild(o);
+  });
+  langSel.onchange = () => switchLang(langSel.value, () => { langSel.value = S.lang; });
+  langRow.appendChild(langLbl); langRow.appendChild(langSel);
+  const h = mk('h2', 'guide-h');
+  const p = mk('p', 'guide-p');
+  const dots = mk('div', 'guide-dots');
+  dots.setAttribute('aria-hidden', 'true');
+  const row = mk('div', 'guide-row');
+  const prevB = mk('button', 'action guide-prev');
+  const nextB = mk('button', 'action brand guide-next');
+  prevB.type = 'button'; nextB.type = 'button';
+  row.appendChild(prevB); row.appendChild(nextB);
+  box.appendChild(top); if (sosB) box.appendChild(sosB); box.appendChild(langRow); box.appendChild(h); box.appendChild(p); box.appendChild(dots);
+  ov.appendChild(box); ov.appendChild(row);
+  const cur = () => T().guide || g0;
+  // 下の帯(まえ / つぎ)の実寸ぶん、本文の下を空ける(さいごの行が 帯に かくれない。もじの おおきさ・ことばで 帯の高さが かわる)
+  function fit() {
+    const r = row.getBoundingClientRect ? row.getBoundingClientRect() : null;
+    const hh = r ? Math.ceil(r.height) : 0;
+    if (hh > 0) ov.style.paddingBottom = (hh + 24) + 'px';
+  }
+  function draw() {
+    const g = cur();
+    const n = g.bodies.length;
+    if (i > n - 1) i = n - 1;
+    ov.setAttribute('aria-label', g.title);
+    ttl.textContent = g.title;
+    step.textContent = String(g.step).replace('{n}', i + 1).replace('{m}', n);
+    step.setAttribute('dir', 'ltr');   // 「1 / 8」は アラビア語でも 左から(「8 / 1」に見えないように)
+    if (sosB) sosB.textContent = '🚨 ' + T().tabs.er;   // 下の タブと 同じ ことば
+    langRow.style.display = (i === 0) ? '' : 'none';
+    langLbl.textContent = T().setLang;
+    langSel.value = S.lang;
+    h.textContent = guideText(g.heads[i]);
+    p.textContent = guideText(g.bodies[i]);
+    dots.textContent = '';
+    for (let k = 0; k < n; k++) dots.appendChild(mk('span', 'guide-dot' + (k === i ? ' on' : '')));
+    prevB.textContent = g.prev;
+    prevB.style.visibility = (i === 0) ? 'hidden' : 'visible';   // 「つぎ」の位置を かえない
+    nextB.textContent = (i === n - 1) ? g.start : g.next;
+    ov.scrollTop = 0;
+    fit();
+    if (S.scanOn && guideOv === ov) { scan.level = 1; scan.ri = 0; scan.ii = 0; scan.cycles = 0; scanBuildRows(); scanPaint(); }
+  }
+  function close(read) {
+    if (ov.parentNode) ov.parentNode.removeChild(ov);
+    if (guideOv === ov) guideOv = null;
+    if (read !== false) saveJSON(LS_GUIDE, true);
+    if (S.scanOn) { scan.level = 1; scan.ri = 0; scan.ii = 0; scan.cycles = 0; scanBuildRows(); scanPaint(); }
+  }
+  if (sosB) sosB.onclick = () => {
+    const tb = document.querySelector('#tabs button[data-scr="er"]');
+    if (tb) tb.onclick();   // さきに きんきゅう へ(スイッチ入力は とじたあと その がめんで えらびなおす)
+    close(false);
+  };
+  ov._draw = draw;
+  ov._fit = fit;
+  ov._back = () => {
+    if (i > 0) { i--; draw(); return; }
+    if (first) minimizeApp(); else close();
+  };
+  prevB.onclick = () => { if (i > 0) { i--; draw(); } };
+  nextB.onclick = () => { if (i < cur().bodies.length - 1) { i++; draw(); } else close(); };
+  guideOv = ov;
+  document.body.appendChild(ov);
+  draw();
+  try { nextB.focus(); } catch (e) {}
+}
+
 // ---------- Android の戻るボタン（Play版だけ・2026-09-30） ----------
 // @capacitor/app が無いと、戻るを押すと アプリごと後ろに下がっていた(Android 11 以前は閉じる)。
 // 押したときの順: ①いちばん上に重ねたもの=その「とじる/やめる/いいえ」と同じ
@@ -1089,6 +1218,7 @@ function myDlgDirty() {
 }
 function onBack() {
   if (askOv) { const no = askOv.querySelector('.ask-no'); if (no) no.click(); return; }
+  if (guideOv) { guideOv._back(); return; }   // はじめての つかいかた: まえの ページ / 1ページ目は(初回)後ろに下げる・(せっていから)とじる
   if (!$('#bigview').classList.contains('hidden')) { $('#bigview').onclick(); return; }
   if (!$('#mydlg').classList.contains('hidden')) {
     if (myDlgDirty()) {
@@ -1152,7 +1282,9 @@ function boot() {
   bindBackup();
   bindScan();
   watchBack();   // Android の戻るボタン(Play版だけ)
+  $('#btn-guide').onclick = () => openGuide(false);   // せっていの「つかいかた」の「もういちど みる」
   if (S.scanOn) scanStart();
+  if (!guideDone()) openGuide(true);   // はじめての つかいかた(読み終えるまで毎回・2026-09-30)。スイッチ入力は この中で 案内の ボタンを えらびなおす(「つぎ」から)
 
   applyBarSpace();
   watchBarSpace();

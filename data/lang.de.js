@@ -124,5 +124,28 @@ I18N.de = {
   backAsk: 'Diese Karte ist noch nicht gespeichert. Verwerfen und zurückgehen?',
   aboutTitle: 'Über diese App',
   aboutText: 'Soyogi AAC ist ein kostenloses Kommunikationswerkzeug für Menschen, denen das Sprechen schwerfällt. Ohne Werbung, ohne Anmeldung. Alles, was du schreibst, bleibt nur auf diesem Gerät. Nichts wird jemals gesendet.',
-  credit: 'Soyogi — Beratung für Pflege und Unterstützung'
+  credit: 'Soyogi — Beratung für Pflege und Unterstützung',
+  guide: {
+    title: 'Anleitung', step: '{n} / {m}', prev: 'Zurück', next: 'Weiter', start: 'Loslegen', again: 'Noch einmal ansehen',
+    heads: [
+      'Willkommen bei {appName}',
+      '„{tabs.talk}“: Sätze aus Karten bilden',
+      '„{tabs.er}“',
+      '„{tabs.kb}“ und „{tabs.show}“',
+      'Eigene Karten erstellen',
+      'Mit einem Taster bedienen',
+      'Was du schreibst, bleibt auf diesem Gerät',
+      'Besser sehen und hören'
+    ],
+    bodies: [
+      'Diese App ist ein Hilfsmittel, um dich mit Karten und Text zu verständigen, wenn Sprechen schwerfällt.\nWörter, die du antippst, werden vorgelesen. Auch auf einem Gerät ohne Sprachausgabe kannst du deine Wörter groß zeigen.\nDie Sprache wählst du oben bei „{setLang}“.',
+      'Wähle unten in „{tabs.talk}“ die Gruppe „{cats.core}“, „{cats.feel}“ oder eine andere, um ihre Karten zu sehen. Tippe eine Karte an, dann kommt sie in den Satz oben.\n▶ liest den Satz vor. ⌫ löscht eine Karte, 🗑️ löscht alle.\nMit ⭐ speicherst du den Satz unter „{cats.saved}“. Was du nicht mehr brauchst, löschst du mit „{myEdit}“.',
+      'Wenn du Hilfe brauchst, tippe unten auf „{tabs.er}“.\nKarten wie „{@erhelp}“ oder „{@erambulance}“ werden sofort beim Antippen vorgelesen.\nDiese App kann nicht telefonieren. Lass die Menschen in deiner Nähe die Nachricht hören oder sehen.',
+      'Schreibe unten in „{tabs.kb}“ mit den Tasten und tippe dann auf „{kbSay}“ oder „{kbBig}“.\nSchreibe unten in „{tabs.show}“ beliebigen Text und tippe auf „{showBig}“, damit er den ganzen Bildschirm füllt. Zum Schließen tippst du auf den Bildschirm.\n„{showSmall}“ zeigt ihn klein in einer Ecke des Bildschirms, ohne Ton.',
+      'Tippe in „{tabs.set}“ unter „{setMy}“ auf „{myAdd}“.\nFülle „{myLabel}“ aus, tippe auf „{myPhotoPick}“ oder gib ein Emoji ein und tippe dann auf „{mySave}“.\nDie neue Karte erscheint in „{tabs.talk}“ unter „{cats.mine}“.',
+      'Stelle in „{tabs.set}“ die Option „{setScan}“ auf „{scanOn}“. Dann leuchtet ein Rahmen die Elemente nacheinander an.\nDrücke irgendwo auf den Bildschirm, um das Leuchtende zu wählen. Zuerst wählst du eine Zeile, dann eine Schaltfläche darin.\nHalte 1,5 Sekunden gedrückt, um zu „{scanOff}“ zurückzukehren.',
+      'Deine Karten und gespeicherten Sätze bleiben nur auf diesem Gerät und werden nirgendwohin gesendet. Eine Anmeldung ist nicht nötig.\nWenn du das Handy wechselst, tippe in „{tabs.set}“ auf „{bkExport}“, um eine Datei zu sichern, und auf dem neuen Handy auf „{bkImport}“.',
+      'In „{tabs.set}“ kannst du „{setText}“, „{setGrid}“, „{setRate}“ und „{setVoice}“ ändern. Wenn du „{setInstant}“ auf „{off}“ stellst, werden Karten nicht sofort beim Antippen vorgelesen.\nDie Sprache wählst du unten mit 🌐.\nDiese Anleitung kannst du jederzeit in „{tabs.set}“ unter „{guide.title}“ mit „{guide.again}“ wieder ansehen.'
+    ]
+  }
 };

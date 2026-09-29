@@ -124,5 +124,28 @@ I18N.it = {
   backAsk: 'Questa carta non è ancora salvata. Scartarla e tornare indietro?',
   aboutTitle: 'Informazioni sull’app',
   aboutText: 'Soyogi AAC è uno strumento di comunicazione gratuito per chi ha difficoltà a parlare. Senza pubblicità né registrazione. Tutto ciò che scrivi resta solo su questo dispositivo. Non viene mai inviato nulla.',
-  credit: 'Soyogi — consulenza per cura e sostegno'
+  credit: 'Soyogi — consulenza per cura e sostegno',
+  guide: {
+    title: 'Come si usa', step: '{n} / {m}', prev: 'Indietro', next: 'Avanti', start: 'Inizia', again: 'Rivedi',
+    heads: [
+      'Ti diamo il benvenuto in {appName}',
+      '«{tabs.talk}»: frasi con le carte',
+      '«{tabs.er}»',
+      '«{tabs.kb}» e «{tabs.show}»',
+      'Crea le tue carte',
+      'Usare con un sensore',
+      'Ciò che scrivi resta su questo dispositivo',
+      'Vedere e sentire meglio'
+    ],
+    bodies: [
+      'Questa app è uno strumento per comunicare con carte e testo quando parlare è difficile.\nLe parole che tocchi vengono lette ad alta voce. Anche su un dispositivo senza voce puoi mostrare le tue parole in grande.\nScegli la lingua in alto, in «{setLang}».',
+      'In «{tabs.talk}», in basso, scegli «{cats.core}», «{cats.feel}» o un altro gruppo per vedere le carte. Tocca una carta per aggiungerla alla frase in alto.\n▶ legge la frase ad alta voce. ⌫ cancella una carta e 🗑️ le cancella tutte.\nTocca ⭐ per tenere la frase in «{cats.saved}». Ciò che non serve più si cancella con «{myEdit}».',
+      'Quando ti serve aiuto, tocca «{tabs.er}» in basso.\nCarte come «{@erhelp}» o «{@erambulance}» vengono lette appena le tocchi.\nQuesta app non può fare telefonate. Fai sentire o vedere il messaggio alle persone vicine.',
+      'In «{tabs.kb}», in basso, scrivi con i tasti e poi tocca «{kbSay}» o «{kbBig}».\nIn «{tabs.show}», in basso, scrivi ciò che vuoi e tocca «{showBig}» per riempire lo schermo. Tocca lo schermo per chiudere.\n«{showSmall}» lo mostra piccolo in un angolo dello schermo, senza suono.',
+      'In «{tabs.set}», vai a «{setMy}» e tocca «{myAdd}».\nCompila «{myLabel}», tocca «{myPhotoPick}» o scrivi un emoji, poi tocca «{mySave}».\nLa nuova carta compare in «{cats.mine}», dentro «{tabs.talk}».',
+      'In «{tabs.set}», metti «{setScan}» su «{scanOn}»: una cornice illumina gli elementi uno dopo l’altro.\nPremi in qualsiasi punto dello schermo per scegliere ciò che è illuminato. Prima scegli una riga, poi un pulsante di quella riga.\nTieni premuto 1,5 secondi per tornare a «{scanOff}».',
+      'Le tue carte e le frasi salvate restano solo su questo dispositivo e non vengono mai inviate. Non serve registrarsi.\nQuando cambi telefono, tocca «{bkExport}» in «{tabs.set}» per tenere un file, poi tocca «{bkImport}» sul nuovo telefono.',
+      'In «{tabs.set}» puoi cambiare «{setText}», «{setGrid}», «{setRate}» e «{setVoice}». Se metti «{setInstant}» su «{off}», le carte non vengono lette appena le tocchi.\nScegli la lingua con 🌐 in basso.\nPuoi rivedere questa guida quando vuoi con «{guide.again}», in «{guide.title}» dentro «{tabs.set}».'
+    ]
+  }
 };
