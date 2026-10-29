@@ -156,7 +156,7 @@
         <button id="btn-bk-import" class="pill"></button>
       </div>
       <p class="hint" id="bk-hint"></p>
-      <p class="hint" id="bk-msg"></p>
+      <p class="hint" id="bk-msg" role="status" aria-live="polite"></p>
       <input type="file" id="bk-file" accept="application/json,.json" class="hidden">
     </div>
 
@@ -172,7 +172,7 @@
       <span class="setlabel" id="lb-about"></span>
       <p id="about-text"></p>
       <p id="about-credit"></p>
-      <p class="ver">v1.5.3</p>
+      <p class="ver">v1.5.4</p>
     </div>
   </section>
 
@@ -192,7 +192,11 @@
 </nav>
 
 <!-- でかもじ表示 -->
-<div id="bigview" class="hidden"><div id="bigtext"></div></div>
+<!-- 2026-10-30 キーボード・読み上げソフトでも とじられるように(Esc・Enter・スペース) -->
+<div id="bigview" class="hidden" role="dialog" aria-modal="true" tabindex="-1"><div id="bigtext"></div></div>
+
+<!-- 知らせ(保存できなかったとき など・読み上げソフトにも伝える) -->
+<div id="toast" role="status" aria-live="polite"></div>
 
 <!-- ちいさく みせる（画面のすみに小さく出す・音なし・押すと消える） -->
 <button id="smallview" class="hidden" type="button"></button>
@@ -210,6 +214,7 @@
     <input type="file" id="my-photo-file" accept="image/*" class="hidden">
     <label><span id="dlg-lb-emoji"></span><input id="my-e" maxlength="8" placeholder="⭐"></label>
     <p class="hint" id="dlg-hint"></p>
+    <p class="hint" id="dlg-msg" role="status" aria-live="polite"></p>
     <div class="btnrow">
       <button id="btn-my-save" class="action brand"></button>
       <button id="btn-my-cancel" class="action ghost"></button>
@@ -222,10 +227,13 @@
 <script src="app.js"></script>
 <!-- Farcaster Mini App SDK：読込完了を通知しスプラッシュを閉じる（Farcaster外/オフラインでは無害にスキップ） -->
 <script type="module">
-  try {
-    const { sdk } = await import("https://esm.sh/@farcaster/miniapp-sdk");
-    await sdk.actions.ready();
-  } catch (e) { /* Farcaster外では何もしない */ }
+  /* Farcaster の中(iframe / アプリの WebView)で開いたときだけ SDK を読む。ふつうのブラウザ・PWA では外へつながない */
+  if ((window.self !== window.top) || window.ReactNativeWebView) {
+    try {
+      const { sdk } = await import("https://esm.sh/@farcaster/miniapp-sdk");
+      await sdk.actions.ready();
+    } catch (e) { /* Farcaster外では何もしない */ }
+  }
 </script>
 </body>
 </html>

@@ -315,6 +315,23 @@ html[dir="rtl"] #smallview {
   right: auto;
   left: max(10px, env(safe-area-inset-left));
 }
+#bigview:focus { outline: none; }
+
+/* 知らせ(2026-10-30): 保存できなかったときなど。読み上げソフトにも伝える(role=status)。
+   空のときは見えない。下タブのすぐ上の まんなか */
+#toast {
+  position: fixed; z-index: 45;
+  left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--tabbar-h) + 12px);
+  max-width: min(90vw, 420px);
+  padding: 10px 16px;
+  background: #26332c; color: #fff;
+  border-radius: 12px;
+  font-size: 1rem; line-height: 1.5;
+  text-align: center;
+  pointer-events: none;
+}
+#toast:empty { display: none; }
 #btn-show-small.on { background: #eaf6ef; border-color: var(--brand); }
 
 /* ---------- せってい ---------- */
@@ -401,11 +418,13 @@ html[dir="rtl"] #smallview {
   gap: 2px;
   border: none; background: none; cursor: pointer;
   font-family: inherit;
-  color: #7c8a82;
+  /* 2026-10-30 見えにくい方向けに濃く: 白地で 6.32:1(前の #7c8a82 は 3.61:1) */
+  color: #55635b;
 }
 #tabs .te { font-size: 1.45rem; line-height: 1; }
 #tabs .tl { font-size: 0.66rem; white-space: nowrap; }
-#tabs button.active { color: var(--brand); font-weight: bold; }
+/* えらんでいるタブ: 白地で 5.35:1(前の var(--brand) #2e9e6b は 3.38:1) */
+#tabs button.active { color: var(--brand-dark); font-weight: bold; }
 #tabs button.active .te { transform: scale(1.12); }
 
 /* ---------- ダイアログ ---------- */

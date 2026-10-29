@@ -16,8 +16,18 @@ function loadJSON(key, fallback) {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
   catch (e) { return fallback; }
 }
+// 保存できたら true。できなければ(容量がいっぱい・プライベートモードなど) false(2026-10-30)
 function saveJSON(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch (e) { return false; }
+}
+// 知らせ(#toast・role=status で読み上げソフトにも伝わる)。数秒で消える
+let toastTimer = null;
+function showToast(msg) {
+  const el = $('#toast');
+  if (!el) return;
+  el.textContent = msg || '';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.textContent = ''; }, 4000);
 }
 
 let S = Object.assign({}, DEF, loadJSON(LS_SET, {}));
@@ -624,11 +634,19 @@ function fitBigText() {
     el.style.fontSize = size + 'px';
   }
 }
+let bigFrom = null;   // でか文字を ひらく前に フォーカスが あった ボタン(とじたら もどす)
 function openBig(text) {
   if (!text) return;
   $('#bigtext').textContent = text;
+  bigFrom = document.activeElement;
   $('#bigview').classList.remove('hidden');
   fitBigText();
+  try { $('#bigview').focus(); } catch (e) {}
+}
+function closeBig() {
+  $('#bigview').classList.add('hidden');
+  const f = bigFrom; bigFrom = null;
+  if (f && f.focus && f.isConnected !== false) { try { f.focus(); } catch (e) {} }
 }
 // ---------- ちいさく みせる ----------
 // 固まってしまった瞬間に、周りに目立たず相手に見せるためのもの。
@@ -663,7 +681,16 @@ function bindShow() {
   $('#btn-show-from-bar').onclick = () => { $('#show-text').value = barText(); };
   $('#btn-show-small').onclick = toggleSmall;
   $('#smallview').onclick = closeSmall;
-  $('#bigview').onclick = () => $('#bigview').classList.add('hidden');
+  $('#bigview').onclick = closeBig;
+  // キーボードでも とじる(2026-10-30): Esc・Enter・スペース。スイッチ入力中は scanSelect が とじる
+  document.addEventListener('keydown', (ev) => {
+    if (S.scanOn || $('#bigview').classList.contains('hidden')) return;
+    if (ev.key === 'Escape' || ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+      ev.preventDefault();
+      if (ev.repeat) return;   // ひらいた ときの キーを 押したままでも すぐ とじない
+      closeBig();
+    }
+  });
   window.addEventListener('resize', () => {
     if (!$('#bigview').classList.contains('hidden')) fitBigText();
   });
@@ -716,6 +743,7 @@ function resizePhoto(file, cb) {
   img.src = URL.createObjectURL(file);
 }
 function openMyDlg() {
+  $('#dlg-msg').textContent = '';
   $('#my-e').value = '';
   $('#my-l').value = '';
   setDlgPhoto('');
@@ -742,7 +770,13 @@ function bindMyDlg() {
     const card = { id: 'my' + Date.now(), e: emoji, label };
     if (dlgImg) card.img = dlgImg;
     myCards.push(card);
-    saveJSON(LS_MY, myCards);
+    if (!saveJSON(LS_MY, myCards)) {
+      // 保存できなければ 足さずに、窓と 入れた ことばは そのまま残して 知らせる(2026-10-30)
+      myCards.pop();
+      $('#dlg-msg').textContent = T().saveFail;
+      return;
+    }
+    $('#dlg-msg').textContent = '';
     $('#mydlg').classList.add('hidden');
     renderMyList();
     if (curCat === 'mine') renderGrid();
@@ -782,15 +816,30 @@ function bindBackup() {
       try {
         const d = JSON.parse(r.result);
         if (!d || d.app !== 'soyogi_aac') throw new Error('bad file');
-        if (Array.isArray(d.mycards)) { myCards = d.mycards; saveJSON(LS_MY, myCards); }
-        if (Array.isArray(d.phrases)) { phrases = d.phrases; saveJSON(LS_PH, phrases); }
+        const prevLang = S.lang;
+        let ok = true;
+        if (Array.isArray(d.mycards)) { myCards = d.mycards; ok = saveJSON(LS_MY, myCards) && ok; }
+        if (Array.isArray(d.phrases)) { phrases = d.phrases; ok = saveJSON(LS_PH, phrases) && ok; }
         if (d.settings && typeof d.settings === 'object') {
           S = Object.assign({}, DEF, d.settings);
           S.voice = Object.assign({}, DEF.voice, d.settings.voice || {});
-          saveJSON(LS_SET, S);
+          if (!LANGS.some(l => l[0] === S.lang)) S.lang = prevLang;
+          ok = saveJSON(LS_SET, S) && ok;
         }
-        applySettings(); applyI18n(); renderAll();
-        $('#bk-msg').textContent = T().bkDone;
+        if (!ok) {
+          // 保存できなかったときは「よみこみました」を出さず、画面を 端末に のこっている ものに もどす(2026-10-30)
+          S = Object.assign({}, DEF, loadJSON(LS_SET, {}));
+          S.voice = Object.assign({}, DEF.voice, S.voice || {});
+          myCards = loadJSON(LS_MY, []);
+          phrases = loadJSON(LS_PH, []);
+        }
+        // まだ 読みこんでいない ことばの バックアップでも、画面と 読み上げを 同じ ことばに する(2026-10-30)。
+        // その ことばを 読めなければ、いまの ことばの まま
+        loadLang(S.lang, (langOk) => {
+          if (!langOk) { S.lang = prevLang; saveJSON(LS_SET, S); }
+          applySettings(); applyI18n(); renderAll();
+          $('#bk-msg').textContent = ok ? T().bkDone : T().saveFail;
+        });
       } catch (e) {
         $('#bk-msg').textContent = T().bkFail;
       }
@@ -1305,7 +1354,12 @@ function boot() {
       text: barText(),
       chips: bar.map(c => ({ e: c.e, t: c.t, img: c.img }))
     });
-    saveJSON(LS_PH, phrases);
+    if (!saveJSON(LS_PH, phrases)) {
+      // 保存できなければ 足さずに 知らせる(2026-10-30)
+      phrases.pop();
+      showToast(T().saveFail);
+      return;
+    }
     buzz();
     const b = $('#btn-star');
     b.classList.add('saved-flash');
