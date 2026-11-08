@@ -60,7 +60,7 @@ h2 { margin: 6px 4px 4px; font-size: 1.2rem; }
   position: sticky; top: 0; z-index: 5;
   background: var(--bg);
   /* スクロールで画面上端に貼り付いた時、時計・電池アイコンと重ならないよう内側に下げる */
-  padding-top: env(safe-area-inset-top);
+  padding-top: calc(8px + env(safe-area-inset-top));
   padding-bottom: 4px;
   box-shadow: 0 5px 10px -7px rgba(30, 70, 50, 0.35);
 }

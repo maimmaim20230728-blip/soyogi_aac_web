@@ -1,6 +1,6 @@
 'use strict';
 // そよぎ式AACアプリ Service Worker
-const CACHE = 'soyogi-aac-v13';
+const CACHE = 'soyogi-aac-v14';
 const ASSETS = [
   './',
   'index.html',

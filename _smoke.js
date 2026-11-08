@@ -117,7 +117,7 @@ check('画面の左右余白に env(safe-area-inset-left/right)',
   /\.screen\{[^}]*max\(10px,env\(safe-area-inset-left\)\)/.test(css));
 check('はなす画面は上余白を二重に取らない', /#scr-talk\{padding-top:10px;?\}/.test(css));
 check('固定ヘッダーの上余白に env(safe-area-inset-top)',
-  /#talk-head\{[^}]*padding-top:env\(safe-area-inset-top\)/.test(css));
+  /#talk-head\{[^}]*padding-top:calc\(8px\+env\(safe-area-inset-top\)\)/.test(css));
 check('下タブが高さ固定でない(ナビバーぶんでボタンが潰れない)',
   /#tabs\{[^}]*min-height:calc\(var\(--nav-h\)\+env\(safe-area-inset-bottom\)\)/.test(css) &&
   !/#tabs\{[^}]*height:var\(--nav-h\);/.test(css));
