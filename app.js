@@ -427,7 +427,10 @@ function scanSelect() {
   } else {
     const el = (scan.rows[scan.ri] || [])[scan.ii];
     scanClearHi();
-    if (el) el.click(); // プログラム的click(isTrusted=false)は封鎖を通過する
+    // 🌐 は button に 透明な select を かさねた つくりで、click() では select が ひらかない。
+    //   スイッチ入力では ことばを えらぶ窓(大きな ボタン)を出す(2026-11-11)。マウス・タッチの 🌐 は いままでどおり select
+    if (el && el.id === 'tab-lang') openLangPick();
+    else if (el) el.click(); // プログラム的click(isTrusted=false)は封鎖を通過する
     scan.level = 1; scan.ri = 0; scan.ii = 0; scan.cycles = 0;
     setTimeout(() => { scanBuildRows(); scanPaint(); }, 80);
     scanResetTimer();
@@ -437,6 +440,7 @@ function scanEnable(on) {
   S.scanOn = on;
   saveJSON(LS_SET, S);
   syncSegs();
+  if (guideOv && guideOv._syncScan) guideOv._syncScan();   // 案内の 1ページ目: スイッチ中は ことばの ボタン / ふだんは select
   if (on) scanStart(); else scanStop();
 }
 // 👻 あとから来るクリック(2026-09-30): スイッチの タップで「えらぶ」と、指を はなした あとに
@@ -1131,6 +1135,54 @@ function askBox(msg, done) {
   try { no.focus(); } catch (e) {}
 }
 
+// ---------- ことばを えらぶ窓（スイッチ入力・2026-11-11） ----------
+// スイッチ入力で 下の 🌐 か、はじめての つかいかた 1ページ目の「🌐 ことば」を えらぶと出る。
+// 14言語の 大きな ボタン(🌐 の select と 同じ 表記・同じ ならび)+「とじる」。確かめの窓と 同じ 重ね方で、
+// 出ている あいだは askOv に いれる(スキャンは この窓の ボタンだけ・Play版の戻るボタン=とじる)。
+// えらぶと 窓を とじてから switchLang(code)。Web版でも Play版でも 同じ窓
+function openLangPick() {
+  if (askOv) return;
+  const ov = document.createElement('div');
+  ov.className = 'ask-ov lang-ov';
+  ov.setAttribute('role', 'dialog');
+  ov.setAttribute('aria-modal', 'true');
+  ov.setAttribute('aria-label', T().setLang);
+  const box = document.createElement('div'); box.className = 'ask-box';
+  const p = document.createElement('p'); p.className = 'ask-msg'; p.textContent = '🌐 ' + T().setLang;
+  const grid = document.createElement('div'); grid.className = 'lang-grid';
+  const row = document.createElement('div'); row.className = 'ask-row';
+  const no = document.createElement('button'); no.type = 'button'; no.className = 'action ask-no'; no.textContent = T().langClose;
+  let closed = false;
+  const close = () => {
+    if (closed) return;
+    closed = true;
+    if (ov.parentNode) ov.parentNode.removeChild(ov);
+    if (askOv === ov) askOv = null;
+    if (S.scanOn) { scan.level = 1; scan.ri = 0; scan.ii = 0; scan.cycles = 0; scanBuildRows(); scanPaint(); }
+  };
+  LANGS.forEach(([code, name]) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'action lang-pick' + (code === S.lang ? ' brand' : '');
+    b.dataset.code = code;
+    b.setAttribute('lang', code);
+    b.setAttribute('aria-pressed', code === S.lang ? 'true' : 'false');
+    b.textContent = name;
+    b.onclick = () => {
+      close();
+      if (code !== S.lang) switchLang(code);
+    };
+    grid.appendChild(b);
+  });
+  no.onclick = close;
+  row.appendChild(no);
+  box.appendChild(p); box.appendChild(grid); box.appendChild(row); ov.appendChild(box);
+  document.body.appendChild(ov);
+  askOv = ov;
+  if (S.scanOn) { scan.level = 1; scan.ri = 0; scan.ii = 0; scan.cycles = 0; scanBuildRows(); scanPaint(); }
+  try { no.focus(); } catch (e) {}
+}
+
 // ---------- はじめての つかいかた（初回の案内・2026-09-30） ----------
 // ヒロさん「ひとつずつ・そよぎ みたいなタイプのアプリは、必ず最初に使い方の丁寧な説明を出してほしい。10代の情報室のように」。
 // ・初回起動で かならず出す(さいごまで よむまで、ひらくたびに出る)。前からの利用者にも 更新のあと 1回だけ出る
@@ -1183,7 +1235,16 @@ function openGuide(first) {
     langSel.appendChild(o);
   });
   langSel.onchange = () => switchLang(langSel.value, () => { langSel.value = S.lang; });
-  langRow.appendChild(langLbl); langRow.appendChild(langSel);
+  // スイッチ入力の あいだは select の かわりに ボタン(スキャンは button だけを えらぶ)。おすと ことばを えらぶ窓(下の 🌐 と 同じ)
+  const langBtn = mk('button', 'pill guide-lang-btn');
+  langBtn.type = 'button';
+  langBtn.onclick = () => openLangPick();
+  langRow.appendChild(langLbl); langRow.appendChild(langSel); langRow.appendChild(langBtn);
+  function syncLangScan() {
+    langSel.style.display = S.scanOn ? 'none' : '';
+    langBtn.style.display = S.scanOn ? '' : 'none';
+    langBtn.textContent = '🌐 ' + langName(S.lang);
+  }
   const h = mk('h2', 'guide-h');
   const p = mk('p', 'guide-p');
   const dots = mk('div', 'guide-dots');
@@ -1214,6 +1275,7 @@ function openGuide(first) {
     langRow.style.display = (i === 0) ? '' : 'none';
     langLbl.textContent = T().setLang;
     langSel.value = S.lang;
+    syncLangScan();
     h.textContent = guideText(g.heads[i]);
     p.textContent = guideText(g.bodies[i]);
     dots.textContent = '';
@@ -1238,6 +1300,7 @@ function openGuide(first) {
   };
   ov._draw = draw;
   ov._fit = fit;
+  ov._syncScan = syncLangScan;
   ov._back = () => {
     if (i > 0) { i--; draw(); return; }
     if (first) minimizeApp(); else close();

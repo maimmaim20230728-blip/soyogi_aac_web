@@ -120,6 +120,7 @@ I18N.zh = {
   bkDone: '✅ 导入成功！', bkFail: '⚠️ 导入失败。请检查文件。',
   saveFail: '⚠️ 无法保存。',
   askYes: '是', askNo: '否',
+  langClose: '关闭',
   backAsk: '这张卡片还没有保存。要放弃并返回吗？',
   aboutTitle: '关于本应用',
   aboutText: 'Soyogi AAC 是为说话有困难的人提供的免费沟通工具。无广告、无需注册。您写的内容只保存在本设备上，绝不会发送到任何地方。',

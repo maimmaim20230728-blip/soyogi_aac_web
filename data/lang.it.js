@@ -121,6 +121,7 @@ I18N.it = {
   bkDone: '✅ Importato!', bkFail: '⚠️ Import non riuscito. Controlla il file.',
   saveFail: '⚠️ Non è stato possibile salvare.',
   askYes: 'Sì', askNo: 'No',
+  langClose: 'Chiudi',
   backAsk: 'Questa carta non è ancora salvata. Scartarla e tornare indietro?',
   aboutTitle: 'Informazioni sull’app',
   aboutText: 'Soyogi AAC è uno strumento di comunicazione gratuito per chi ha difficoltà a parlare. Senza pubblicità né registrazione. Tutto ciò che scrivi resta solo su questo dispositivo. Non viene mai inviato nulla.',

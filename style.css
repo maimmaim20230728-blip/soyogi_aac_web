@@ -94,8 +94,9 @@ h2 { margin: 6px 4px 4px; font-size: 1.2rem; }
 .chip .chl { font-size: 0.66rem; white-space: nowrap; }
 
 #bar-btns { display: flex; flex-direction: row; gap: 5px; }
-#bar-del { display: flex; flex-direction: column; gap: 4px; }
-#bar-del .barbtn { flex: 1; font-size: 0.9rem; padding: 0 9px; line-height: 1; }
+/* ⌫ と 🗑️ は横並び・それぞれ 48×48px 以上(2026-11-11 ヒロさん決定 案A)。⌫ が文字の欄に近い側 */
+#bar-del { display: flex; flex-direction: row; gap: 5px; }
+#bar-del .barbtn { flex: 0 0 auto; min-width: 48px; min-height: 48px; font-size: 1.05rem; padding: 0 4px; line-height: 1; }
 .barbtn {
   border: 2px solid var(--line);
   background: var(--card-bg);
@@ -468,6 +469,11 @@ html[dir="rtl"] #smallview {
 }
 .ask-msg { font-size: 1.15rem; font-weight: bold; line-height: 1.6; margin: 0 0 14px; overflow-wrap: anywhere; }
 .ask-row { display: flex; gap: 8px; }
+/* ことばを えらぶ窓(スイッチ入力で 🌐 を えらんだとき・app.js openLangPick・2026-11-11)。確かめの窓と同じ重ね方 */
+.lang-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 0 12px; }
+.lang-grid .action { min-height: 56px; padding: 10px 8px; font-size: 1.1rem; overflow-wrap: anywhere; }
+.lang-ov .ask-row .action { min-height: 52px; }
+.guide-lang-btn { min-height: 48px; max-width: 100%; overflow-wrap: anywhere; }
 
 /* ---------- はじめての つかいかた（app.js openGuide・2026-09-30） ----------
    初回に出す案内。画面ぜんたい(下のタブの上)に重ねる。でかもじ(50)・ダイアログ(40)より上、確かめの窓(60)より下。
