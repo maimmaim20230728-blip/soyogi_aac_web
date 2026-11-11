@@ -146,6 +146,7 @@ h2 { margin: 6px 4px 4px; font-size: 1.2rem; }
   cursor: pointer; font-family: inherit;
 }
 .pill.brand { background: var(--brand); border-color: var(--brand-dark); color: #fff; }
+#voice-warn .pill { margin-top: 6px; min-height: 44px; }
 .pill.on { background: var(--danger); border-color: #a83232; color: #fff; }
 
 /* ---------- カードグリッド ---------- */

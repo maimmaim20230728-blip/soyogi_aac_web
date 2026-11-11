@@ -282,6 +282,13 @@ function renderGrid() {
         if (S.instant) speak(p.text);
         bar = chips.map(c => ({ e: c.e, t: c.t, img: c.img }));
         renderBar(); buzz();
+        // つかった文を先頭へ(つぎに この画面を ひらいた とき、よく つかう文が上に ならぶ)。
+        // いま ゆびの下の カードが うごかないよう、画面は 作り直さない(2026-11-11)
+        const k = phrases.indexOf(p);
+        if (k > 0) {
+          phrases.splice(k, 1); phrases.unshift(p);
+          if (!saveJSON(LS_PH, phrases)) { phrases.shift(); phrases.splice(k, 0, p); }
+        }
       }, editMine ? (() => delPhrase(p.id)) : undefined));
     });
     return;
@@ -820,6 +827,20 @@ function bindBackup() {
       try {
         const d = JSON.parse(r.result);
         if (!d || d.app !== 'soyogi_aac') throw new Error('bad file');
+        // 取り込む前に、置き換わる中身(じぶんカードと保存した文の数)を知らせて、いいえなら何も変えない(2026-11-11)
+        const nc = Array.isArray(d.mycards) ? d.mycards.length : myCards.length;
+        const np = Array.isArray(d.phrases) ? d.phrases.length : phrases.length;
+        $('#bk-msg').textContent = '';
+        askBox(T().bkAsk.replace('{c}', nc).replace('{p}', np), (yes) => { if (yes) bkApply(d); });
+      } catch (e) {
+        $('#bk-msg').textContent = T().bkFail;
+      }
+    };
+    r.readAsText(f);
+  };
+}
+function bkApply(d) {
+      try {
         const prevLang = S.lang;
         let ok = true;
         if (Array.isArray(d.mycards)) { myCards = d.mycards; ok = saveJSON(LS_MY, myCards) && ok; }
@@ -848,9 +869,6 @@ function bindBackup() {
       } catch (e) {
         $('#bk-msg').textContent = T().bkFail;
       }
-    };
-    r.readAsText(f);
-  };
 }
 
 // ---------- せってい ----------
@@ -1010,7 +1028,7 @@ function applyI18n() {
     '#dlg-lb-emoji': t.myEmoji, '#dlg-lb-label': t.myLabel, '#dlg-hint': t.myHint,
     '#dlg-lb-photo': t.myPhoto, '#btn-my-photo': t.myPhotoPick, '#btn-my-photo-clear': t.myPhotoClear,
     '#btn-my-save': t.mySave, '#btn-my-cancel': t.myCancel,
-    '#voice-warn': t.noVoice
+    '#voice-warn-t': t.noVoice, '#btn-warn-show': t.noVoiceGo
   };
   Object.keys(map).forEach(sel => {
     const el = $(sel);
@@ -1409,6 +1427,11 @@ function boot() {
   }
 
   $('#btn-say').onclick = () => { const t = barText(); if (t) speak(t); };
+  // 声が出ない端末の警告から、そのまま「みせる」(でか文字)へ(2026-11-11)
+  $('#btn-warn-show').onclick = () => {
+    const tb = document.querySelector('#tabs button[data-scr="show"]');
+    if (tb) tb.click();
+  };
   $('#btn-back').onclick = () => { bar.pop(); renderBar(); };
   $('#btn-clear').onclick = () => { bar = []; renderBar(); };
   $('#btn-star').onclick = () => {

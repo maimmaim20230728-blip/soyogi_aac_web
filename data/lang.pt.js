@@ -122,6 +122,7 @@ I18N.pt = {
   saveFail: '⚠️ Não foi possível salvar.',
   askYes: 'Sim', askNo: 'Não',
   langClose: 'Fechar',
+  bkAsk: 'Os dados atuais serão substituídos: cartões próprios {c}, frases salvas {p}. Continuar?', noVoiceGo: 'Abrir "Mostrar" (letra grande)',
   backAsk: 'Este cartão ainda não foi salvo. Descartar e voltar?',
   aboutTitle: 'Sobre este app',
   aboutText: 'O Soyogi AAC é uma ferramenta de comunicação gratuita para pessoas com dificuldade de fala. Sem anúncios, sem cadastro. Tudo o que você escreve fica só neste aparelho. Nada é enviado a lugar nenhum.',

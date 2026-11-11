@@ -323,5 +323,15 @@ gLangs.forEach(l => { const g = G.I18N[l].guide; [g.title, g.prev, g.next, g.sta
 check('案内: 禁句・ダッシュ・価格の言葉が無い' + (wordBad.length ? '(' + wordBad.join(' / ') + ')' : ''), wordBad.length === 0);
 
 console.log('');
+console.log('[v1.5.8] 取り込み前の確かめ / 声が出ない端末の「みせる」ボタン / 使った文を先頭へ');
+{
+  const langsAll = Object.keys(G.I18N);
+  const miss = langsAll.filter(l => !G.I18N[l].bkAsk || !G.I18N[l].noVoiceGo || G.I18N[l].bkAsk.indexOf('{c}') < 0 || G.I18N[l].bkAsk.indexOf('{p}') < 0);
+  check('bkAsk({c}{p}入り)と noVoiceGo が全言語にある' + (miss.length ? '(' + miss.join(',') + ')' : ''), miss.length === 0);
+  check('取り込みは askBox で確かめてから bkApply', app.indexOf('askBox(T().bkAsk') >= 0 && app.indexOf('bkApply(d)') >= 0);
+  check('警告に「みせる」ボタン(btn-warn-show)', /id="btn-warn-show"/.test(html) && /btn-warn-show/.test(app));
+  check('ほぞんした文は つかうと先頭へ', app.indexOf('phrases.unshift(p)') >= 0);
+}
+console.log('');
 if (ng) { console.error('SMOKE NG: ' + ng + '件 失敗 / OK ' + ok + '件'); process.exit(1); }
 console.log('SMOKE OK: セーフエリア/バージョン/v1.5/つかいかた 全' + ok + '件 合格');

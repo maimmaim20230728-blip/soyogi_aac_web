@@ -122,6 +122,7 @@ I18N.de = {
   saveFail: '⚠️ Speichern war nicht möglich.',
   askYes: 'Ja', askNo: 'Nein',
   langClose: 'Schließen',
+  bkAsk: 'Die aktuellen Daten werden ersetzt: Eigene Karten {c}, gespeicherte Sätze {p}. Fortfahren?', noVoiceGo: 'Zeigen (große Schrift) öffnen',
   backAsk: 'Diese Karte ist noch nicht gespeichert. Verwerfen und zurückgehen?',
   aboutTitle: 'Über diese App',
   aboutText: 'Soyogi AAC ist ein kostenloses Kommunikationswerkzeug für Menschen, denen das Sprechen schwerfällt. Ohne Werbung, ohne Anmeldung. Alles, was du schreibst, bleibt nur auf diesem Gerät. Nichts wird jemals gesendet.',

@@ -121,6 +121,7 @@ I18N.zh = {
   saveFail: '⚠️ 无法保存。',
   askYes: '是', askNo: '否',
   langClose: '关闭',
+  bkAsk: '当前数据将被替换：我的卡片 {c} 张，已保存的句子 {p} 条。继续吗？', noVoiceGo: '打开“展示”（大字）',
   backAsk: '这张卡片还没有保存。要放弃并返回吗？',
   aboutTitle: '关于本应用',
   aboutText: 'Soyogi AAC 是为说话有困难的人提供的免费沟通工具。无广告、无需注册。您写的内容只保存在本设备上，绝不会发送到任何地方。',
