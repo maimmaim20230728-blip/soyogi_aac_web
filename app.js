@@ -838,6 +838,7 @@ function bindBackup() {
         loadLang(S.lang, (langOk) => {
           if (!langOk) { S.lang = prevLang; saveJSON(LS_SET, S); }
           applySettings(); applyI18n(); renderAll();
+          if (S.scanOn) scanStart(); else scanStop(); // 取り込んだ設定のスイッチ入力に動きを合わせる
           $('#bk-msg').textContent = ok ? T().bkDone : T().saveFail;
         });
       } catch (e) {
