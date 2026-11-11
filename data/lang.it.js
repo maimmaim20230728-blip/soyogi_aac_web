@@ -122,7 +122,7 @@ I18N.it = {
   saveFail: '⚠️ Non è stato possibile salvare.',
   askYes: 'Sì', askNo: 'No',
   langClose: 'Chiudi',
-  bkAsk: 'I dati attuali saranno sostituiti: carte personali {c}, frasi salvate {p}. Continuare?', noVoiceGo: 'Apri «Mostrare» (testo grande)',
+  bkAsk: 'I dati attuali saranno sostituiti: carte personali {c}, frasi salvate {p}. Continuare?', noVoiceGo: 'Apri «Mostrare» (lettere grandi)',
   backAsk: 'Questa carta non è ancora salvata. Scartarla e tornare indietro?',
   aboutTitle: 'Informazioni sull’app',
   aboutText: 'Soyogi AAC è uno strumento di comunicazione gratuito per chi ha difficoltà a parlare. Senza pubblicità né registrazione. Tutto ciò che scrivi resta solo su questo dispositivo. Non viene mai inviato nulla.',
